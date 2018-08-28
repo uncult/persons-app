@@ -55,7 +55,10 @@ class App extends Component {
         </main>
         {this.state.modalData ?
           <section className={`modal-container ${this.state.modalToggle}`}>
-            <div className="modal-header">Person Information</div>
+            <div className="modal-header">
+              Person Information
+              <i class="fa fa-times" aria-hidden="true" onClick={this.modalToggle}></i>
+            </div>
 
             <div className="modal-person">
               <div className="image-cropper">
@@ -87,7 +90,7 @@ class App extends Component {
               </div>
             </div>
             <div className="modal-footer">
-              <button className="modal-button">Back</button>
+              <button className="modal-button" onClick={this.modalToggle}>Back</button>
             </div>
           </section>
           : ""}
