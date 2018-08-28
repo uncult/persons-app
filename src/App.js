@@ -1,14 +1,27 @@
 import React, { Component } from 'react';
 import './App.css';
 import Person from './Models/Person';
+import Modal from './Models/Modal';
 
 class App extends Component {
   constructor() {
     super();
     this.state = {
-      serverData: ""
+      serverData: "",
+      modalToggle: "modal-invisible",
+      modalData: ""
     };
+    this.modalToggle = this.modalToggle;
   }
+
+  modalToggle = (data) => {
+    if (this.state.modalToggle === "modal-invisible") {
+      this.setState({ modalToggle: "modal-visible" });
+      this.setState({ modalData: data });
+    } else {
+      this.setState({ modalToggle: "modal-invisible" });
+    }
+  };
 
   componentDidMount() {
     const api_token = "df3541068dfdbdc2895db305918e6ed5743c74cf" //!important! Should be server side.
@@ -32,13 +45,15 @@ class App extends Component {
           People's List
         </section>
         <main>
-          {console.log(this.state.serverData)}
           {this.state.serverData ?
             this.state.serverData.map(data =>
-              <Person key={data.id} data={data} />
+              <Person key={data.id} data={data} openModal={this.modalToggle} />
             )
             : "Fetching data..."}
         </main>
+        <section className={this.state.modalToggle}>
+          {this.state.modalData.name}
+        </section>
         <footer>
         </footer>
       </div>

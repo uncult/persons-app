@@ -76,3 +76,22 @@ main {
   background: #3F4346;
 }
 
+.modal-visible {
+  display: block;
+  position: relative;
+}
+
+.modal-invisible {
+  display: none;
+  position: relative;
+}
+
+.modal-container {
+  overflow: hidden;
+  position: fixed;
+  top:0;
+  background: black;
+  z-index: 1;
+  width: 100vw;
+  height: 100vw;
+}
