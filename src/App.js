@@ -16,21 +16,31 @@ class App extends Component {
     //const persons_per_page = 10;
     const url = `https://${company_domain}.pipedrive.com/v1/persons?api_token=${api_token} 
     &start=0&limit=10`;
-    
+
     fetch(`${url}`)
-    .then(response => response.json())
-    .then(data => this.setState({serverData: data.data}))
+      .then(response => response.json())
+      .then(data => this.setState({ serverData: data.data }))
   }
 
   render() {
     return (
       <div className="App">
-        {console.log(this.state.serverData)}
-        {this.state.serverData ? 
-          this.state.serverData.map(data => 
-            <Person key={data.id} data={data}/>
-          )
-          : "Fetching data..."}
+        <header>
+          <span className="logo">pipedrive</span>
+        </header>
+        <section className="section-title">
+          People's List
+        </section>
+        <main>
+          {console.log(this.state.serverData)}
+          {this.state.serverData ?
+            this.state.serverData.map(data =>
+              <Person key={data.id} data={data} />
+            )
+            : "Fetching data..."}
+        </main>
+        <footer>
+        </footer>
       </div>
     );
   }
