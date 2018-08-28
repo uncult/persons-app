@@ -7,7 +7,7 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
-      serverData: "",
+      personsData: "",
       modalToggle: "modal-invisible",
       modalData: ""
     };
@@ -33,7 +33,7 @@ class App extends Component {
 
     fetch(`${url}`)
       .then(response => response.json())
-      .then(data => this.setState({ serverData: data.data }))
+      .then(data => this.setState({ personsData: data.data }))
   }
 
   render() {
@@ -47,8 +47,8 @@ class App extends Component {
           People's List
         </section>
         <main>
-          {this.state.serverData ?
-            this.state.serverData.map(data =>
+          {this.state.personsData ?
+            this.state.personsData.map(data =>
               <Person key={data.id} data={data} openModal={this.modalToggle} />
             )
             : "Fetching data..."}
@@ -57,7 +57,7 @@ class App extends Component {
           <section className={`modal-container ${this.state.modalToggle}`}>
             <div className="modal-header">
               Person Information
-              <i class="fa fa-times" aria-hidden="true" onClick={this.modalToggle}></i>
+              <i className="fa fa-times" aria-hidden="true" onClick={this.modalToggle}></i>
             </div>
 
             <div className="modal-person">
@@ -81,12 +81,12 @@ class App extends Component {
 
               <div className="modal-info-container">
                 <div className="modal-info-title">Groups</div>
-                <div className="modal-info-data"></div>
+                <div className="modal-info-data">{this.state.modalData["eba502a1d2a7185f72d5a335ee7b4b75d89d3cd4"]}</div>
               </div>
 
               <div className="modal-info-container">
                 <div className="modal-info-title">Location</div>
-                <div className="modal-info-data">{this.state.modalData.country}</div>
+                <div className="modal-info-data">{this.state.modalData["588b8754dc0f49dc5aa5f1ad750c3a877f7dd5a1_locality"]}</div>
               </div>
             </div>
             <div className="modal-footer">
