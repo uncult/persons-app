@@ -18,6 +18,7 @@ class App extends Component {
     if (this.state.modalToggle === "modal-invisible") {
       this.setState({ modalToggle: "modal-visible" });
       this.setState({ modalData: data });
+      console.log(data);
     } else {
       this.setState({ modalToggle: "modal-invisible" });
     }
@@ -36,6 +37,7 @@ class App extends Component {
   }
 
   render() {
+
     return (
       <div className="App">
         <header>
@@ -51,9 +53,44 @@ class App extends Component {
             )
             : "Fetching data..."}
         </main>
-        <section className={this.state.modalToggle}>
-          {this.state.modalData.name}
-        </section>
+        {this.state.modalData ?
+          <section className={`modal-container ${this.state.modalToggle}`}>
+            <div className="modal-header">Person Information</div>
+
+            <div className="modal-person">
+              <div className="image-cropper">
+                <img src={require('./Img/placeholder.jpg')} alt={this.state.modalData.name} className="person-image" />
+              </div>
+              <div className="modal-name">{this.state.modalData.name}</div>
+              <div className="modal-phone">+{this.state.modalData.phone[0].value}</div>
+            </div>
+
+            <div className="modal-info">
+              <div className="modal-info-container">
+                <div className="modal-info-title">Email</div>
+                <div className="modal-info-data">{this.state.modalData.email[0].value}</div>
+              </div>
+
+              <div className="modal-info-container">
+                <div className="modal-info-title">Organization</div>
+                <div className="modal-info-data">{this.state.modalData.org_name}</div>
+              </div>
+
+              <div className="modal-info-container">
+                <div className="modal-info-title">Groups</div>
+                <div className="modal-info-data"></div>
+              </div>
+
+              <div className="modal-info-container">
+                <div className="modal-info-title">Location</div>
+                <div className="modal-info-data">{this.state.modalData.country}</div>
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button className="modal-button">Back</button>
+            </div>
+          </section>
+          : ""}
         <footer>
         </footer>
       </div>
