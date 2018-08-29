@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
-import Person from './Models/Person';
+import Person from './Components/Person';
 import { SortableContainer, SortableElement, arrayMove } from 'react-sortable-hoc';
 
 class App extends Component {
@@ -8,14 +8,17 @@ class App extends Component {
     super();
     this.state = {
       personsData: "",
+      page: 1,
       modalToggle: "modal-invisible",
-      modalData: ""
+      modalData: "",
+      isMobileDevice: this.isMobileDevice()
     };
     this.modalToggle = this.modalToggle;
   }
 
   /*Sorting*/
   onSortEnd = ({ oldIndex, newIndex }) => {
+    console.log(oldIndex, newIndex);
     this.setState({
       personsData: arrayMove(this.state.personsData, oldIndex, newIndex),
     })
@@ -31,31 +34,58 @@ class App extends Component {
     }
   };
 
+  nextPage = () => {
+    this.setState({ page: this.state.page + 1 })
+  }
+
+  previousPage = () => {
+    this.setState({ page: this.state.page - 1 })
+  }
+
   /*Checking if mobile*/
   isMobileDevice = () => {
-    return (typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf('IEMobile') !== -1);
+    if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+      return true;
+    } else {
+      return false;
+    }
+
   };
 
   /*Pulling data from the API*/
-  componentDidMount() {
+  fetchData = () => {
     const api_token = "df3541068dfdbdc2895db305918e6ed5743c74cf" //!important! Should be server side.
     const company_domain = "testcompany100";
-    //const persons_per_page = 10;
+    /*const url = `https://${company_domain}.pipedrive.com/v1/persons?api_token=${api_token} 
+    &start=`+ (this.state.page - 1) * persons_per_page + `&limit=` + this.state.page * persons_per_page;*/
+
     const url = `https://${company_domain}.pipedrive.com/v1/persons?api_token=${api_token} 
-    &start=0&limit=10`;
+    &start=0&limit=100`;
+
+    const orderKey = "4aef6c7aeac722a72f486c85b0fba827f3bea8dd";
 
     fetch(`${url}`)
       .then(response => response.json())
-      .then(data => this.setState({ personsData: data.data }))
+      .then(data => this.setState({ personsData: data.data.sort((a, b) => a[orderKey] - b[orderKey])
+       }))
+  }
+
+
+  componentDidMount() {
+    this.fetchData();
   }
 
   render() {
     const groupKey = "eba502a1d2a7185f72d5a335ee7b4b75d89d3cd4";
     const localityKey = "588b8754dc0f49dc5aa5f1ad750c3a877f7dd5a1_locality";
     const countryKey = "588b8754dc0f49dc5aa5f1ad750c3a877f7dd5a1_country";
+    //const orderKey = "4aef6c7aeac722a72f486c85b0fba827f3bea8dd";
+
+    const persons_per_page = 10;
 
     const modalData = this.state.modalData;
 
+    /* Sorting drag and drop */
     const SortableItem = SortableElement(({ data }) => {
       return <Person key={data.id} data={data} openModal={this.modalToggle} />
     });
@@ -63,9 +93,10 @@ class App extends Component {
     const SortableList = SortableContainer((items) => {
       return (
         <div>
-          {items.data ? items.data.map((data, key) => (
-            <SortableItem key={data.id} index={key} data={data} />
-          )) : ""}
+          {items.data ?
+            items.data.slice((this.state.page - 1) * persons_per_page, this.state.page * persons_per_page).map((data, key) => (
+              <SortableItem key={data.id} index={key + (this.state.page - 1) * persons_per_page} data={data} />
+            )) : ""}
         </div>
       );
     });
@@ -82,7 +113,7 @@ class App extends Component {
 
         {/*------Rendering Person Rows------*/}
         <main>
-          {this.isMobileDevice() ?
+          {this.state.isMobileDevice ?
             <SortableList data={this.state.personsData} onSortEnd={this.onSortEnd} pressDelay={100} /> :
             <SortableList data={this.state.personsData} onSortEnd={this.onSortEnd} distance={10} />}
         </main>
@@ -133,7 +164,16 @@ class App extends Component {
             </div>
           </section>
           : ""}
+        <section className="pagination-container">
+          {this.state.page !== 1 ?
+            <button className="pagination-button" onClick={this.previousPage}>Previous</button> : ""
+          }
 
+          {this.state.page !== Math.ceil(this.state.personsData.length / this.state.page) ?
+            <button className="pagination-button" onClick={this.nextPage}>Next</button> : ""
+          }
+
+        </section>
         <footer>
         </footer>
       </div>
