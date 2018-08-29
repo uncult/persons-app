@@ -16,7 +16,8 @@ class App extends Component {
       page: 1,
       modalToggle: "modal-invisible",
       modalData: "",
-      isMobileDevice: this.isMobileDevice()
+      isMobileDevice: this.isMobileDevice(),
+      filterString: ""
     };
     this.modalToggle = this.modalToggle;
   }
@@ -39,6 +40,7 @@ class App extends Component {
     }
   };
 
+  /*Page controllers*/
   nextPage = () => {
     this.setState({ page: this.state.page + 1 })
   }
@@ -56,6 +58,10 @@ class App extends Component {
     }
   };
 
+  searchData = () => {
+
+  }
+
   /*Pulling data from the API*/
   fetchData = () => {
     const api_token = "df3541068dfdbdc2895db305918e6ed5743c74cf" //!important! Should be server side.
@@ -72,7 +78,6 @@ class App extends Component {
       }))
   }
 
-
   componentDidMount() {
     this.fetchData();
   }
@@ -80,10 +85,17 @@ class App extends Component {
   render() {
     const persons_per_page = 10;
 
-    let pageStart = (this.state.page - 1) * persons_per_page;
-    let pageEnd = this.state.page * persons_per_page;
+    let personsToRender = this.state.personsData ? this.state.personsData.filter(person => person.name.toLowerCase().includes(
+      this.state.filterString ? this.state.filterString.toLowerCase() : ""
+    )) : [];
 
     const modalData = this.state.modalData;
+
+
+    /*Page Variables*/
+    let numOfPages = Math.ceil(personsToRender.length/persons_per_page);
+    let pageStart = (this.state.page - 1) * persons_per_page;
+    let pageEnd = this.state.page * persons_per_page;
 
     /* Sorting drag and drop */
     const SortableItem = SortableElement(({ data }) => {
@@ -94,7 +106,8 @@ class App extends Component {
       return (
         <div>
           {items.data ?
-            items.data.slice(pageStart, pageEnd).map((data, key) => (
+            items.data
+              .slice(pageStart, pageEnd).map((data, key) => (
               <SortableItem key={data.id} index={key + pageStart} data={data} />
             )) : ""}
         </div>
@@ -105,8 +118,11 @@ class App extends Component {
       <div className="App">
         <header>
             <div className="logo">pipedrive</div>
-            <i class="fa fa-search" aria-hidden="true"></i>
-            <input className="search" type="text" placeholder="Search"/>
+            <i className="fa fa-search" aria-hidden="true"></i>
+            <input className="search" type="text" placeholder="Search" onKeyUp={event => {
+              this.setState({page: 1});
+              this.setState({filterString: event.target.value});
+            }}/>
         </header>
 
         <section className="section-title">
@@ -116,8 +132,8 @@ class App extends Component {
         {/*------Rendering Person Rows------*/}
         <main>
           {this.state.isMobileDevice ?
-            <SortableList data={this.state.personsData} onSortEnd={this.onSortEnd} pressDelay={100} /> :
-            <SortableList data={this.state.personsData} onSortEnd={this.onSortEnd} distance={10} />}
+            <SortableList data={personsToRender} onSortEnd={this.onSortEnd} pressDelay={100} /> :
+            <SortableList data={personsToRender} onSortEnd={this.onSortEnd} distance={10} />}
         </main>
 
         {/*------Modal Window------*/}
@@ -171,7 +187,7 @@ class App extends Component {
             <button className="pagination-button" onClick={this.previousPage}>Previous</button> : ""
           }
 
-          {this.state.page !== Math.ceil(this.state.personsData.length / this.state.page) ?
+          {this.state.page !== numOfPages && numOfPages !== 0 ?
             <button className="pagination-button" onClick={this.nextPage}>Next</button> : ""
           }
 
