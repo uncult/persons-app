@@ -3,6 +3,11 @@ import './App.css';
 import Person from './Components/Person';
 import { SortableContainer, SortableElement, arrayMove } from 'react-sortable-hoc';
 
+const groupKey = "eba502a1d2a7185f72d5a335ee7b4b75d89d3cd4";
+const localityKey = "588b8754dc0f49dc5aa5f1ad750c3a877f7dd5a1_locality";
+const countryKey = "588b8754dc0f49dc5aa5f1ad750c3a877f7dd5a1_country";
+const orderKey = "4aef6c7aeac722a72f486c85b0fba827f3bea8dd";
+
 class App extends Component {
   constructor() {
     super();
@@ -49,7 +54,6 @@ class App extends Component {
     } else {
       return false;
     }
-
   };
 
   /*Pulling data from the API*/
@@ -59,15 +63,13 @@ class App extends Component {
     /*const url = `https://${company_domain}.pipedrive.com/v1/persons?api_token=${api_token} 
     &start=`+ (this.state.page - 1) * persons_per_page + `&limit=` + this.state.page * persons_per_page;*/
 
-    const url = `https://${company_domain}.pipedrive.com/v1/persons?api_token=${api_token} 
-    &start=0&limit=100`;
-
-    const orderKey = "4aef6c7aeac722a72f486c85b0fba827f3bea8dd";
+    const url = `https://${company_domain}.pipedrive.com/v1/persons?api_token=${api_token}`;
 
     fetch(`${url}`)
       .then(response => response.json())
-      .then(data => this.setState({ personsData: data.data.sort((a, b) => a[orderKey] - b[orderKey])
-       }))
+      .then(data => this.setState({
+        personsData: data.data.sort((a, b) => a[orderKey] - b[orderKey])
+      }))
   }
 
 
@@ -76,11 +78,6 @@ class App extends Component {
   }
 
   render() {
-    const groupKey = "eba502a1d2a7185f72d5a335ee7b4b75d89d3cd4";
-    const localityKey = "588b8754dc0f49dc5aa5f1ad750c3a877f7dd5a1_locality";
-    const countryKey = "588b8754dc0f49dc5aa5f1ad750c3a877f7dd5a1_country";
-    //const orderKey = "4aef6c7aeac722a72f486c85b0fba827f3bea8dd";
-
     const persons_per_page = 10;
 
     let pageStart = (this.state.page - 1) * persons_per_page;
@@ -107,7 +104,9 @@ class App extends Component {
     return (
       <div className="App">
         <header>
-          <span className="logo">pipedrive</span>
+            <div className="logo">pipedrive</div>
+            <i class="fa fa-search" aria-hidden="true"></i>
+            <input className="search" type="text" placeholder="Search"/>
         </header>
 
         <section className="section-title">
