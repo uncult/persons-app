@@ -47,8 +47,11 @@ main {
   grid-template-columns: 1fr 100px;
   grid-template-areas: "name image" "organization image";
   border: solid 2px #F0F0F0;
+  background: #FFFFFF;
   padding: 12px 20px;
-  margin: 8px 20px 0px 20px;;
+  margin: 8px 20px 0px 20px;
+  cursor: pointer;
+  user-select: none;
 }
 
 .person-name {

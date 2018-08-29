@@ -10,7 +10,7 @@ class Person extends Component {
 
 	render() {
 		let data = this.state.data;
-
+		
 		return (
 			<div className="person-container" onClick={() => this.props.openModal(data)}>
 				<div className="person-name">{data.name}</div>

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import Person from './Models/Person';
-//import Modal from './Models/Modal';
+import { SortableContainer, SortableElement, arrayMove } from 'react-sortable-hoc';
 
 class App extends Component {
   constructor() {
@@ -14,15 +14,26 @@ class App extends Component {
     this.modalToggle = this.modalToggle;
   }
 
+  /*Sorting*/
+  onSortEnd = ({ oldIndex, newIndex }) => {
+    this.setState({
+      personsData: arrayMove(this.state.personsData, oldIndex, newIndex),
+    })
+  };
+
   /*Toggling visibility of the modal window*/
   modalToggle = (data) => {
     if (this.state.modalToggle === "modal-invisible") {
       this.setState({ modalToggle: "modal-visible" });
       this.setState({ modalData: data });
-      console.log(data);
     } else {
       this.setState({ modalToggle: "modal-invisible" });
     }
+  };
+
+  /*Checking if mobile*/
+  isMobileDevice = () => {
+    return (typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf('IEMobile') !== -1);
   };
 
   /*Pulling data from the API*/
@@ -45,6 +56,20 @@ class App extends Component {
 
     const modalData = this.state.modalData;
 
+    const SortableItem = SortableElement(({ data }) => {
+      return <Person key={data.id} data={data} openModal={this.modalToggle} />
+    });
+
+    const SortableList = SortableContainer((items) => {
+      return (
+        <div>
+          {items.data ? items.data.map((data, key) => (
+            <SortableItem key={data.id} index={key} data={data} />
+          )) : ""}
+        </div>
+      );
+    });
+
     return (
       <div className="App">
         <header>
@@ -57,20 +82,18 @@ class App extends Component {
 
         {/*------Rendering Person Rows------*/}
         <main>
-          {this.state.personsData ?
-            this.state.personsData.map(data =>
-              <Person key={data.id} data={data} openModal={this.modalToggle} />
-            )
-            : "Fetching data..."}
+          {this.isMobileDevice() ?
+            <SortableList data={this.state.personsData} onSortEnd={this.onSortEnd} pressDelay={100} /> :
+            <SortableList data={this.state.personsData} onSortEnd={this.onSortEnd} distance={10} />}
         </main>
-        
+
         {/*------Modal Window------*/}
         {this.state.modalData ?
           <section className={this.state.modalToggle}>
             <div className={`modal-container`}>
               <div className="modal-header">
                 Person Information
-              <i className="fa fa-times" aria-hidden="true" onClick={this.modalToggle}/>
+              <i className="fa fa-times" aria-hidden="true" onClick={this.modalToggle} />
               </div>
 
               <div className="modal-person">
