@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import Person from './Components/Person';
+import PersonAdd from './Components/PersonAdd';
 import { SortableContainer, SortableElement, arrayMove } from 'react-sortable-hoc';
 
 const groupKey = "eba502a1d2a7185f72d5a335ee7b4b75d89d3cd4";
@@ -14,12 +15,12 @@ class App extends Component {
     this.state = {
       personsData: "",
       page: 1,
-      modalToggle: "modal-invisible",
+      personModalToggle: "modal-invisible",
       modalData: "",
       isMobileDevice: this.isMobileDevice(),
       filterString: ""
     };
-    this.modalToggle = this.modalToggle;
+    this.personModalToggle = this.personModalToggle;
   }
 
   /*Sorting*/
@@ -31,12 +32,12 @@ class App extends Component {
   };
 
   /*Toggling visibility of the modal window*/
-  modalToggle = (data) => {
-    if (this.state.modalToggle === "modal-invisible") {
-      this.setState({ modalToggle: "modal-visible" });
+  personModalToggle = (data) => {
+    if (this.state.personModalToggle === "modal-invisible") {
+      this.setState({ personModalToggle: "modal-visible" });
       this.setState({ modalData: data });
     } else {
-      this.setState({ modalToggle: "modal-invisible" });
+      this.setState({ personModalToggle: "modal-invisible" });
     }
   };
 
@@ -91,15 +92,14 @@ class App extends Component {
 
     const modalData = this.state.modalData;
 
-
     /*Page Variables*/
-    let numOfPages = Math.ceil(personsToRender.length/persons_per_page);
+    let numOfPages = Math.ceil(personsToRender.length / persons_per_page);
     let pageStart = (this.state.page - 1) * persons_per_page;
     let pageEnd = this.state.page * persons_per_page;
 
     /* Sorting drag and drop */
     const SortableItem = SortableElement(({ data }) => {
-      return <Person key={data.id} data={data} openModal={this.modalToggle} />
+      return <Person key={data.id} data={data} openModal={this.personModalToggle} />
     });
 
     const SortableList = SortableContainer((items) => {
@@ -108,8 +108,8 @@ class App extends Component {
           {items.data ?
             items.data
               .slice(pageStart, pageEnd).map((data, key) => (
-              <SortableItem key={data.id} index={key + pageStart} data={data} />
-            )) : ""}
+                <SortableItem key={data.id} index={key + pageStart} data={data} />
+              )) : ""}
         </div>
       );
     });
@@ -117,12 +117,12 @@ class App extends Component {
     return (
       <div className="App">
         <header>
-            <div className="logo">pipedrive</div>
-            <i className="fa fa-search" aria-hidden="true"></i>
-            <input className="search" type="text" placeholder="Search" onKeyUp={event => {
-              this.setState({page: 1});
-              this.setState({filterString: event.target.value});
-            }}/>
+          <div className="logo">pipedrive</div>
+          <i className="fa fa-search" aria-hidden="true"></i>
+          <input className="search" type="text" placeholder="Search" onKeyUp={event => {
+            this.setState({ page: 1 });
+            this.setState({ filterString: event.target.value });
+          }} />
         </header>
 
         <section className="section-title">
@@ -131,6 +131,10 @@ class App extends Component {
 
         {/*------Rendering Person Rows------*/}
         <main>
+          <button className="person-button-add" >Add person</button>
+
+          <PersonAdd visibility="modal-visible"/>
+
           {this.state.isMobileDevice ?
             <SortableList data={personsToRender} onSortEnd={this.onSortEnd} pressDelay={100} /> :
             <SortableList data={personsToRender} onSortEnd={this.onSortEnd} distance={10} />}
@@ -138,11 +142,11 @@ class App extends Component {
 
         {/*------Modal Window------*/}
         {this.state.modalData ?
-          <section className={this.state.modalToggle}>
+          <section className={this.state.personModalToggle}>
             <div className={`modal-container`}>
               <div className="modal-header">
                 Person Information
-              <i className="fa fa-times" aria-hidden="true" onClick={this.modalToggle} />
+              <i className="fa fa-times" aria-hidden="true" onClick={this.personModalToggle} />
               </div>
 
               <div className="modal-person">
@@ -177,11 +181,13 @@ class App extends Component {
                 </div>
               </div>
               <div className="modal-footer">
-                <button className="modal-button" onClick={this.modalToggle}>Back</button>
+                <button className="modal-button" onClick={this.personModalToggle}>Back</button>
               </div>
             </div>
           </section>
           : ""}
+
+        {/*------Pagination------*/}
         <section className="pagination-container">
           {this.state.page !== 1 ?
             <button className="pagination-button" onClick={this.previousPage}>Previous</button> : ""
@@ -190,10 +196,9 @@ class App extends Component {
           {this.state.page !== numOfPages && numOfPages !== 0 ?
             <button className="pagination-button" onClick={this.nextPage}>Next</button> : ""
           }
-
         </section>
-        <footer>
-        </footer>
+
+        <footer></footer>
       </div>
     );
   }
