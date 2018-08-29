@@ -17,8 +17,10 @@ footer {
 }
 
 main {
-  margin-bottom: 50px;
+  margin-bottom: 0px;
 }
+
+button:focus {outline:0;}
 
 .logo {
   position: absolute;
@@ -207,6 +209,7 @@ main {
 .pagination-container {
   margin: 0 auto;
   text-align:center;
+  margin: 15px 0;
 }
 
 .pagination-container button {
@@ -225,6 +228,6 @@ main {
   cursor: pointer;  
 }
 
-.pagination-button {
+.pagination-button:hover {
   background: #FAFAFA;
 }

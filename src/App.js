@@ -83,6 +83,9 @@ class App extends Component {
 
     const persons_per_page = 10;
 
+    let pageStart = (this.state.page - 1) * persons_per_page;
+    let pageEnd = this.state.page * persons_per_page;
+
     const modalData = this.state.modalData;
 
     /* Sorting drag and drop */
@@ -94,8 +97,8 @@ class App extends Component {
       return (
         <div>
           {items.data ?
-            items.data.slice((this.state.page - 1) * persons_per_page, this.state.page * persons_per_page).map((data, key) => (
-              <SortableItem key={data.id} index={key + (this.state.page - 1) * persons_per_page} data={data} />
+            items.data.slice(pageStart, pageEnd).map((data, key) => (
+              <SortableItem key={data.id} index={key + pageStart} data={data} />
             )) : ""}
         </div>
       );
