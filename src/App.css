@@ -28,7 +28,7 @@ main {
   cursor: pointer;
 }
 
-.fa {
+.fa-building {
   color: #747474;
   margin-right: 5px;
 }
@@ -39,6 +39,8 @@ main {
   border-bottom: solid 2px #F0F0F0;
   margin-bottom: 14px;
 }
+
+/* PERSON ROW */
 
 .person-container {
   display: grid;
@@ -76,14 +78,19 @@ main {
   background: #3F4346;
 }
 
+/* MODAL WINDOW */
 .modal-visible {
   display: block;
-  position: relative;
+  position: fixed;
+  overflow: hidden;
+  top: 0;
+  width: 100%;
+  height: 100vh;
+  background:rgba(0,0,0,0.50)
 }
 
 .modal-invisible {
   display: none;
-  position: relative;
 }
 
 .modal-info {
@@ -91,9 +98,13 @@ main {
 }
 
 .modal-container {
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
   width: 342px;
   margin: 0 auto;
   border: solid 1px #F0F0F0;
+  background: #FFFFFF;
   -webkit-box-shadow: 0px 0px 40px 0px rgba(0,0,0,0.15  );
   -moz-box-shadow: 0px 0px 40px 0px rgba(0,0,0,0.15);
   box-shadow: 0px 0px 40px 0px rgba(0,0,0,0.15);
@@ -139,6 +150,7 @@ main {
 }
 
 .modal-info-title {
+  line-height: 12px;
   font-weight: bold;
   font-size: 12px;
   color: #838383;
@@ -147,6 +159,7 @@ main {
 }
 
 .modal-info-data{
+  line-height: 12px;
   font-size: 11px;
   font-weight: 600;
   color: #BBBBBB;
@@ -161,8 +174,9 @@ main {
 }
 
 .modal-button{
-  position: absolute;
-  right: 14px;
+  position: relative;
+  float: right;
+  margin-right: 15px;
   padding: 8px 22px;
   background: #FFFFFF;
   border: 1px solid #D5D5D5;
@@ -172,9 +186,13 @@ main {
   cursor: pointer;  
 }
 
+.modal-button:hover {
+  background: #FAFAFA;
+}
+
 .fa-times{
-  position: absolute;
-  right: 15px;
+  position: relative;
+  float: right;
   line-height: 20px;
   color: #7D7D7D;
   cursor: pointer;
