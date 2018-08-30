@@ -40,10 +40,12 @@ class App extends Component {
   fetchData = () => {
     const api_token = "df3541068dfdbdc2895db305918e6ed5743c74cf" //!important! Should be server side.
     const company_domain = "testcompany100";
-    /*const url = `https://${company_domain}.pipedrive.com/v1/persons?api_token=${api_token} 
-    &start=`+ (this.state.page - 1) * 10 + `&limit=` + this.state.page * 10;*/
+    const persons_per_page = 10;
 
-    const url = `https://${company_domain}.pipedrive.com/v1/persons?api_token=${api_token}&start=0&limit=105`;
+    const url = `https://${company_domain}.pipedrive.com/v1/persons?api_token=${api_token} 
+    &start=${(this.state.page - 1) * 10}&limit=${persons_per_page}&sort=${orderKey}%20ASC`;
+
+    //const url = `https://${company_domain}.pipedrive.com/v1/persons?api_token=${api_token}&start=0&limit=105`;
 
     fetch(`${url}`)
       .then(response => response.json())
@@ -85,15 +87,16 @@ class App extends Component {
     this.setState({ personsData: this.state.personsData.filter(el => el.id !== id) });
   }
 
-  /*Page controllers*/
-  nextPage = () => {
-    this.setState({ page: this.state.page + 1 })
-    this.fetchData();
+  findPersons = (input) => {
+    if(input.length > 1)
+    api.findPersons(input).then(data => console.log(data));
+    //api.findPersons(input).then(data => data ? this.setState({personsData: data}):"");
   }
 
-  previousPage = () => {
-    this.setState({ page: this.state.page - 1 })
-    
+  /*Page controllers*/
+  flipPage = (direction) => {
+    this.setState({ page: this.state.page + direction })
+    setTimeout(() => this.fetchData(), 0);
   }
 
   /*Checking if mobile*/
@@ -110,18 +113,7 @@ class App extends Component {
   }
 
   render() {
-    const persons_per_page = 10;
-
-    let personsToRender = this.state.personsData ? this.state.personsData.filter(person => person.name.toLowerCase().includes(
-      this.state.filterString ? this.state.filterString.toLowerCase() : ""
-    )) : [];
-
     const modalData = this.state.modalData;
-
-    /*Page Variables*/
-    let numOfPages = Math.ceil(personsToRender.length / persons_per_page);
-    let pageStart = (this.state.page - 1) * persons_per_page;
-    let pageEnd = this.state.page * persons_per_page;
 
     /* Sorting drag and drop */
     const SortableItem = SortableElement(({ data }) => {
@@ -131,11 +123,9 @@ class App extends Component {
     const SortableList = SortableContainer((items) => {
       return (
         <div>
-          {items.data ?
-            items.data
-              .slice(pageStart, pageEnd).map((data, key) => (
-                <SortableItem key={data.id} index={key + pageStart} data={data} />
-              )) : ""}
+          {items.data.map((data, key) => (
+            <SortableItem key={data.id} index={key} data={data} />
+          ))}
         </div>
       );
     });
@@ -146,6 +136,7 @@ class App extends Component {
           <div className="logo">pipedrive</div>
           <i className="fa fa-search" aria-hidden="true"></i>
           <input className="search" type="text" placeholder="Search" onKeyUp={event => {
+            this.findPersons(event.target.value);
             this.setState({ page: 1 });
             this.setState({ filterString: event.target.value });
           }} />
@@ -156,16 +147,18 @@ class App extends Component {
         </section>
 
         {/*------Rendering Person Rows------*/}
-        <main>
-          <button className="person-button-add" onClick={this.personAddModalToggle}>Add person</button>
-          <div className={this.state.personAddModalToggle}>
-            <PersonAdd personAddModalToggle={this.personAddModalToggle} visibility={this.state.personAddModalToggle} />
-          </div>
-          {this.state.isMobileDevice ?
-            <SortableList data={personsToRender} onSortEnd={this.onSortEnd} pressDelay={100} /> :
-            <SortableList data={personsToRender} onSortEnd={this.onSortEnd} distance={10} />}
-        </main>
+        {this.state.personsData ?
+          <main>
 
+            <button className="person-button-add" onClick={this.personAddModalToggle}>Add person</button>
+            <div className={this.state.personAddModalToggle}>
+              <PersonAdd personAddModalToggle={this.personAddModalToggle} visibility={this.state.personAddModalToggle} />
+            </div>
+            {this.state.isMobileDevice ?
+              <SortableList data={this.state.personsData} onSortEnd={this.onSortEnd} pressDelay={100} /> :
+              <SortableList data={this.state.personsData} onSortEnd={this.onSortEnd} distance={10} />}
+          </main>
+          : ''}
         {/*------Modal Window------*/}
         {modalData ?
           <section className={this.state.personModalToggle}>
@@ -223,14 +216,14 @@ class App extends Component {
         <section className="pagination-container">
           <div className="pagination-button-container-left">
             {this.state.page !== 1 ?
-              <button className="pagination-button" onClick={this.previousPage}>
+              <button className="pagination-button" onClick={() => this.flipPage(-1)}>
                 <i className="fa fa-arrow-left" aria-hidden="true"></i>
               </button> : ""
             }
           </div>
           <div className="pagination-button-container-right">
-            {this.state.page !== numOfPages && numOfPages !== 0 ?
-              <button className="pagination-button" onClick={this.nextPage}>
+            {this.state.page ?
+              <button className="pagination-button" onClick={() => this.flipPage(1)}>
                 <i className="fa fa-arrow-right" aria-hidden="true"></i>
               </button> : ""
             }

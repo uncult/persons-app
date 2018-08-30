@@ -46,4 +46,19 @@ export default class Api {
       console.log(err);
     });
   }
+
+  findPersons(input) {
+    if (input.length > 1)
+      return fetch(`https://${company_domain}.pipedrive.com/v1/persons/find?term=${input}&api_token=${api_token}`, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        }
+      }).then(response => response.json())
+        .then(data => {
+          //console.log(`search result: `, data.data)
+          return data.data;
+        });
+  }
 }
