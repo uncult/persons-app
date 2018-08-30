@@ -37,9 +37,12 @@ class App extends Component {
 
     fetch(`${url}`)
       .then(response => response.json())
-      .then(data => this.setState({
-        personsData: data.data.sort((a, b) => a[orderKey] - b[orderKey])
-      }))
+      .then(data => {
+        console.log(data.data)
+        this.setState({
+          personsData: data.data.sort((a, b) => a[orderKey] - b[orderKey])
+        })
+      })
   }
 
   /*Sorting*/
@@ -70,7 +73,7 @@ class App extends Component {
 
   personDelete = (id) => {
     api.deletePerson(id);
-    this.setState({personsData: this.state.personsData.filter(el => el.id !== id)});
+    this.setState({ personsData: this.state.personsData.filter(el => el.id !== id) });
   }
 
   /*Page controllers*/
@@ -163,7 +166,10 @@ class App extends Component {
 
               <div className="modal-person">
                 <div className="image-cropper">
-                  <img src={require('./Img/placeholder.jpg')} alt={modalData.name} className="person-image" />
+                  {modalData.picture_id ?
+                    <img src={modalData.picture_id.pictures["128"]} alt={modalData.name} className="person-image" /> :
+                    <div className="person-image person-image-missing lg">{`${modalData.first_name[0]}${modalData.last_name[0]}`}</div>
+                  }
                 </div>
                 <div className="modal-name">{modalData.name}</div>
                 <div className="modal-phone">{modalData.phone[0].value}</div>
@@ -204,13 +210,20 @@ class App extends Component {
 
         {/*------Pagination------*/}
         <section className="pagination-container">
-          {this.state.page !== 1 ?
-            <button className="pagination-button" onClick={this.previousPage}>Previous</button> : ""
-          }
-
-          {this.state.page !== numOfPages && numOfPages !== 0 ?
-            <button className="pagination-button" onClick={this.nextPage}>Next</button> : ""
-          }
+          <div className="pagination-button-container-left">
+            {this.state.page !== 1 ?
+              <button className="pagination-button" onClick={this.previousPage}>
+                <i className="fa fa-arrow-left" aria-hidden="true"></i>
+              </button> : ""
+            }
+          </div>
+          <div className="pagination-button-container-right">
+            {this.state.page !== numOfPages && numOfPages !== 0 ?
+              <button className="pagination-button" onClick={this.nextPage}>
+                <i className="fa fa-arrow-right" aria-hidden="true"></i>
+              </button> : ""
+            }
+          </div>
         </section>
 
         <footer></footer>

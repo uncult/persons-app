@@ -10,7 +10,7 @@ class Person extends Component {
 
 	render() {
 		let data = this.state.data;
-
+		
 		return (
 			<div className="person-container" onClick={() => this.props.openModal(data)}>
 				<div className="person-name">{data.name}</div>
@@ -19,8 +19,12 @@ class Person extends Component {
 					{data.org_name}
 				</div>
 				<div className="image-cropper">
-					<img src={require('../Img/placeholder.jpg')} alt={data.name} className="person-image" />
+					{data.picture_id ?
+						<img src={data.picture_id.pictures["512"]} alt={data.name} className="person-image" /> :
+						<div className="person-image person-image-missing">{`${data.first_name[0]}${data.last_name[0]}`}</div>
+					}
 				</div>
+
 			</div>
 		);
 	}
