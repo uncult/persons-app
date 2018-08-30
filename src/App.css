@@ -77,7 +77,8 @@ button:focus {outline:0;}
 .search-visible {
   display:block;
   top: 48px;
-  left: 140px;
+  left: 135px;
+  z-index: 9000;
 }
 
 .search-container {
@@ -89,11 +90,25 @@ button:focus {outline:0;}
   border-radius: 0 4px 4px 4px;
 }
 
+.search-data-header {
+  height: 40px;
+  background: #F7F7F7;
+}
+
 .search-data-container {
   overflow-y: auto;
   height: 401px;
-  margin-top: 40px;
-  padding: 0 10px;
+  border-top: solid 2px #B9BABB;
+}
+
+.search-row {
+  padding: 5px 10px;
+}
+
+.search-row:hover {
+  cursor: pointer;
+  background: #317AE2;
+  color: #ffffff;
 }
 
 .search-name {

@@ -18,9 +18,11 @@ class SearchResult extends Component {
     return (
       data && data !== null ?
         <div className={[this.props.className, "search-container"].join(' ')}>
+          <div className="search-data-header">
+          </div>
           <div className="search-data-container">
             {data.map(el =>
-              <div key={el.id}>
+              <div key={el.id} className="search-row">
                 <div className="search-name">{el.name}</div>
                 <div className="search-data">{el.org_name}, {el.phone}, <br />{el.email}</div>
               </div>
