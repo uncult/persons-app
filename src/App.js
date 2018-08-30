@@ -1,17 +1,18 @@
 import React, { Component } from 'react';
+import { SortableContainer, SortableElement, arrayMove } from 'react-sortable-hoc';
 import './App.css';
 import Person from './Components/Person';
 import PersonAdd from './Components/PersonAdd';
-import { SortableContainer, SortableElement, arrayMove } from 'react-sortable-hoc';
+import SearchResult from './Components/SearchResult';
 import Api from './Models/Api';
 
 /*
   -------------------TO FIX-------------------
   1) SAVING ORDER
-  2) FILTERED ORDERING(REMOVE OR FIX)
-  3) UPDATE THE LIST WHEN ADDING AND DELETING
-  4) VISUAL EVENTS ON ADDING OR DELETING
-  5) ADDRESS ADDITION
+  2) UPDATE THE LIST WHEN ADDING AND DELETING
+  3) VISUAL EVENTS ON ADDING OR DELETING
+  4) ADDRESS ADDITION
+  5) SEARCH RESULTS
   --------------------------------------------
 */
 
@@ -26,9 +27,11 @@ class App extends Component {
     super();
     this.state = {
       personsData: "",
+      searchData: "",
       page: 1,
       personModalToggle: "modal-invisible",
       personAddModalToggle: "modal-invisible",
+      searchToggle: "modal-invisible",
       modalData: "",
       isMobileDevice: this.isMobileDevice(),
       filterString: ""
@@ -82,15 +85,22 @@ class App extends Component {
     }
   };
 
+  /*Api functions*/
   personDelete = (id) => {
     api.deletePerson(id);
     this.setState({ personsData: this.state.personsData.filter(el => el.id !== id) });
   }
 
   findPersons = (input) => {
-    if(input.length > 1)
-    api.findPersons(input).then(data => console.log(data));
-    //api.findPersons(input).then(data => data ? this.setState({personsData: data}):"");
+    if (input.length > 1) {
+      api.findPersons(input).then(data => {
+        this.setState({searchData: data});
+        this.setState({ searchToggle: "search-visible" })
+      });
+    } else {
+      this.setState({searchData: ''});
+      this.setState({ searchToggle: "modal-invisible" })
+    }
   }
 
   /*Page controllers*/
@@ -141,6 +151,8 @@ class App extends Component {
             this.setState({ filterString: event.target.value });
           }} />
         </header>
+
+        <SearchResult className={this.state.searchToggle} data={this.state.searchData}/>
 
         <section className="section-title">
           People's List
