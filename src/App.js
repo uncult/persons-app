@@ -3,11 +3,13 @@ import './App.css';
 import Person from './Components/Person';
 import PersonAdd from './Components/PersonAdd';
 import { SortableContainer, SortableElement, arrayMove } from 'react-sortable-hoc';
+import Api from './Models/Api';
 
 const groupKey = "eba502a1d2a7185f72d5a335ee7b4b75d89d3cd4";
 const localityKey = "588b8754dc0f49dc5aa5f1ad750c3a877f7dd5a1_locality";
 const countryKey = "588b8754dc0f49dc5aa5f1ad750c3a877f7dd5a1_country";
 const orderKey = "4aef6c7aeac722a72f486c85b0fba827f3bea8dd";
+const api = new Api();
 
 class App extends Component {
   constructor() {
@@ -16,11 +18,28 @@ class App extends Component {
       personsData: "",
       page: 1,
       personModalToggle: "modal-invisible",
+      personAddModalToggle: "modal-invisible",
       modalData: "",
       isMobileDevice: this.isMobileDevice(),
       filterString: ""
     };
     this.personModalToggle = this.personModalToggle;
+  }
+
+  /*Pulling data from the API*/
+  fetchData = () => {
+    const api_token = "df3541068dfdbdc2895db305918e6ed5743c74cf" //!important! Should be server side.
+    const company_domain = "testcompany100";
+    /*const url = `https://${company_domain}.pipedrive.com/v1/persons?api_token=${api_token} 
+    &start=`+ (this.state.page - 1) * persons_per_page + `&limit=` + this.state.page * persons_per_page;*/
+
+    const url = `https://${company_domain}.pipedrive.com/v1/persons?api_token=${api_token}&start=0&limit=105`;
+
+    fetch(`${url}`)
+      .then(response => response.json())
+      .then(data => this.setState({
+        personsData: data.data.sort((a, b) => a[orderKey] - b[orderKey])
+      }))
   }
 
   /*Sorting*/
@@ -41,6 +60,19 @@ class App extends Component {
     }
   };
 
+  personAddModalToggle = (e) => {
+    if (this.state.personAddModalToggle === "modal-invisible") {
+      this.setState({ personAddModalToggle: "modal-visible" })
+    } else {
+      this.setState({ personAddModalToggle: "modal-invisible" });
+    }
+  };
+
+  personDelete = (id) => {
+    api.deletePerson(id);
+    this.setState({personsData: this.state.personsData.filter(el => el.id !== id)});
+  }
+
   /*Page controllers*/
   nextPage = () => {
     this.setState({ page: this.state.page + 1 })
@@ -58,26 +90,6 @@ class App extends Component {
       return false;
     }
   };
-
-  searchData = () => {
-
-  }
-
-  /*Pulling data from the API*/
-  fetchData = () => {
-    const api_token = "df3541068dfdbdc2895db305918e6ed5743c74cf" //!important! Should be server side.
-    const company_domain = "testcompany100";
-    /*const url = `https://${company_domain}.pipedrive.com/v1/persons?api_token=${api_token} 
-    &start=`+ (this.state.page - 1) * persons_per_page + `&limit=` + this.state.page * persons_per_page;*/
-
-    const url = `https://${company_domain}.pipedrive.com/v1/persons?api_token=${api_token}`;
-
-    fetch(`${url}`)
-      .then(response => response.json())
-      .then(data => this.setState({
-        personsData: data.data.sort((a, b) => a[orderKey] - b[orderKey])
-      }))
-  }
 
   componentDidMount() {
     this.fetchData();
@@ -131,17 +143,17 @@ class App extends Component {
 
         {/*------Rendering Person Rows------*/}
         <main>
-          <button className="person-button-add" >Add person</button>
-
-          <PersonAdd visibility="modal-visible"/>
-
+          <button className="person-button-add" onClick={this.personAddModalToggle}>Add person</button>
+          <div className={this.state.personAddModalToggle}>
+            <PersonAdd personAddModalToggle={this.personAddModalToggle} visibility={this.state.personAddModalToggle} />
+          </div>
           {this.state.isMobileDevice ?
             <SortableList data={personsToRender} onSortEnd={this.onSortEnd} pressDelay={100} /> :
             <SortableList data={personsToRender} onSortEnd={this.onSortEnd} distance={10} />}
         </main>
 
         {/*------Modal Window------*/}
-        {this.state.modalData ?
+        {modalData ?
           <section className={this.state.personModalToggle}>
             <div className={`modal-container`}>
               <div className="modal-header">
@@ -154,7 +166,7 @@ class App extends Component {
                   <img src={require('./Img/placeholder.jpg')} alt={modalData.name} className="person-image" />
                 </div>
                 <div className="modal-name">{modalData.name}</div>
-                <div className="modal-phone">+{modalData.phone[0].value}</div>
+                <div className="modal-phone">{modalData.phone[0].value}</div>
               </div>
 
               <div className="modal-info">
@@ -181,6 +193,9 @@ class App extends Component {
                 </div>
               </div>
               <div className="modal-footer">
+                <button className="person-button-delete" onClick={() => this.personDelete(modalData.id)}>
+                  <i className="fa fa-trash" aria-hidden="true"></i>
+                </button>
                 <button className="modal-button" onClick={this.personModalToggle}>Back</button>
               </div>
             </div>
