@@ -157,12 +157,8 @@ button:focus {outline:0;}
 }
 
 .lg{
-  background: #DEE9FB;
-  text-align: center;
   font-size: 20px;
-  line-height: 61px;
-  color: #3C7BD5;
-  font-weight: bold;
+  line-height: 64px;
 }
 
 /* PERSON MODAL WINDOW */

@@ -5,6 +5,16 @@ import PersonAdd from './Components/PersonAdd';
 import { SortableContainer, SortableElement, arrayMove } from 'react-sortable-hoc';
 import Api from './Models/Api';
 
+/*
+  -------------------TO FIX-------------------
+  1) SAVING ORDER
+  2) FILTERED ORDERING(REMOVE OR FIX)
+  3) UPDATE THE LIST WHEN ADDING AND DELETING
+  4) VISUAL EVENTS ON ADDING OR DELETING
+  5) ADDRESS ADDITION
+  --------------------------------------------
+*/
+
 const groupKey = "eba502a1d2a7185f72d5a335ee7b4b75d89d3cd4";
 const localityKey = "588b8754dc0f49dc5aa5f1ad750c3a877f7dd5a1_locality";
 const countryKey = "588b8754dc0f49dc5aa5f1ad750c3a877f7dd5a1_country";
@@ -31,14 +41,13 @@ class App extends Component {
     const api_token = "df3541068dfdbdc2895db305918e6ed5743c74cf" //!important! Should be server side.
     const company_domain = "testcompany100";
     /*const url = `https://${company_domain}.pipedrive.com/v1/persons?api_token=${api_token} 
-    &start=`+ (this.state.page - 1) * persons_per_page + `&limit=` + this.state.page * persons_per_page;*/
+    &start=`+ (this.state.page - 1) * 10 + `&limit=` + this.state.page * 10;*/
 
     const url = `https://${company_domain}.pipedrive.com/v1/persons?api_token=${api_token}&start=0&limit=105`;
 
     fetch(`${url}`)
       .then(response => response.json())
       .then(data => {
-        console.log(data.data)
         this.setState({
           personsData: data.data.sort((a, b) => a[orderKey] - b[orderKey])
         })
@@ -79,10 +88,12 @@ class App extends Component {
   /*Page controllers*/
   nextPage = () => {
     this.setState({ page: this.state.page + 1 })
+    this.fetchData();
   }
 
   previousPage = () => {
     this.setState({ page: this.state.page - 1 })
+    
   }
 
   /*Checking if mobile*/
