@@ -9,11 +9,15 @@ import Api from './Models/Api';
 
 /*
   -------------------TO DO--------------------
-  1) Saving order
-  2) Automatic order iteration
+  1) Automatic order iteration
+
+  BONUS: Make an ability to add organizations
 
   BUG: need to start searching when refocusing
   the search bar
+
+  BUG: Sometimes sorting doesn't save if
+  done too quickly.
   --------------------------------------------
 */
 
@@ -71,18 +75,14 @@ class App extends Component {
 
     this.setState({personsData: data});
 
+    /*Client side sorting*/
     this.setState({
       personsData: arrayMove(this.state.personsData, oldIndex, newIndex),
     })
 
-    /* UPDATE THROUGH API HERE*/
-    /**************************/
-    /**************************/
-    /**************************/
-    /**************************/
+    /*Api saving data*/
     api.updatePersonOrder(data[oldIndex].id, data[oldIndex][orderKey]);
     api.updatePersonOrder(data[newIndex].id, data[newIndex][orderKey]);
-
   };
 
   /*Toggling visibility of the modal window*/
