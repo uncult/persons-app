@@ -18,11 +18,12 @@ class PersonModal extends Component {
   }
 
   personDelete = (id) => {
-    api.deletePerson(id).then(res => {
-      this.props.fetchData();
-    }).catch(err => {
-      console.log(err);
-    });;
+    if(window.confirm("Are you sure you want to delete this person?"))
+      api.deletePerson(id).then(res => {
+        this.props.fetchData();
+      }).catch(err => {
+        console.log(err);
+      });
   }
 
   deleteEvent = () => {
@@ -80,7 +81,7 @@ class PersonModal extends Component {
             </div>
           </div>
         </div>
-        
+
         <div className="modal-footer">
           <button className="person-button-delete" onClick={this.deleteEvent}>
             <i className="fa fa-trash" aria-hidden="true"></i>

@@ -167,7 +167,6 @@ class App extends Component {
       );
     });
 
-
     return (
       <div className="App">
         <header>
@@ -200,6 +199,7 @@ class App extends Component {
               <SortableList data={this.state.personsData} onSortEnd={this.onSortEnd} distance={10} />}
           </main>
           : ''}
+          
         {/*------Person Modal Window------*/}
         {modalData ?
           <section className={this.state.personModalToggle}>
