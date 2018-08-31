@@ -16,7 +16,7 @@ import Api from './Models/Api';
   --------------------------------------------
 */
 
-const orderKey = "4aef6c7aeac722a72f486c85b0fba827f3bea8dd";
+const orderKey = process.env.REACT_APP_orderKey;
 const persons_per_page = 11;
 const api = new Api();
 
@@ -39,11 +39,11 @@ class App extends Component {
 
   /*Pulling data from the API*/
   fetchData = () => {
-    const api_token = "df3541068dfdbdc2895db305918e6ed5743c74cf" //!important! Should be server side.
+    const api_token = process.env.REACT_APP_API_KEY;
     const company_domain = "testcompany100";
 
-    if(this.state.personsData.length === 1 && this.state.page !== 1)
-      this.setState({page: this.state.page-1})
+    if (this.state.personsData.length === 1 && this.state.page !== 1)
+      this.setState({ page: this.state.page - 1 })
 
     const url = `https://${company_domain}.pipedrive.com/v1/persons?api_token=${api_token} 
     &start=${(this.state.page - 1) * 10}&limit=${persons_per_page}&sort=${orderKey}%20ASC`;
@@ -119,7 +119,7 @@ class App extends Component {
 
 
   searchFocus = () => {
-    if (this.state.searchData){      
+    if (this.state.searchData) {
       this.setState({ searchToggle: "search-visible" });
     }
   }
@@ -199,7 +199,7 @@ class App extends Component {
               <SortableList data={this.state.personsData} onSortEnd={this.onSortEnd} distance={10} />}
           </main>
           : ''}
-          
+
         {/*------Person Modal Window------*/}
         {modalData ?
           <section className={this.state.personModalToggle}>

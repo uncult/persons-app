@@ -81,6 +81,12 @@ button:focus {outline:0;}
   z-index: 9000;
 }
 
+@media only screen and (max-width: 600px) {
+  .search-visible {
+    left: 20px;
+  }
+}
+
 .search-container {
   position: absolute;
   background: #FFFFFF;
@@ -334,7 +340,7 @@ button:focus {outline:0;}
 
 /* ADD PERSON MODAL WINDOW */
 .person-add-body {
-  margin: 30px auto;
+  margin: 15px auto;
   padding: 0 20px 0 15px;
   text-align: left;
 }
@@ -363,13 +369,14 @@ button:focus {outline:0;}
 .person-add-label {
   margin: 5px 0 2px 0;
   color: #AFAFAF;
+  font-size: 14px;
 }
 
 .person-button-delete {
   margin-left: 15px;
   padding: 8px 12px;
   background: #FFFFFF;
-  border: none;
+  border: 1px solid #D5D5D5;
   font-weight: bold;
   border-radius: 3px;
   user-select: none;
@@ -379,7 +386,7 @@ button:focus {outline:0;}
 }
 
 .person-button-delete:hover {
-  background: #fdfdfd;
+  background: #f7f7f7;
 }
 
 /* PAGINATION */

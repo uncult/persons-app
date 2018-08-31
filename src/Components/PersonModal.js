@@ -3,9 +3,7 @@ import Api from '../Models/Api';
 
 const api = new Api();
 
-const groupKey = "eba502a1d2a7185f72d5a335ee7b4b75d89d3cd4";
-const localityKey = "588b8754dc0f49dc5aa5f1ad750c3a877f7dd5a1_locality";
-const countryKey = "588b8754dc0f49dc5aa5f1ad750c3a877f7dd5a1_country";
+
 
 class PersonModal extends Component {
   constructor(props) {
@@ -18,11 +16,11 @@ class PersonModal extends Component {
   }
 
   personDelete = (id) => {
-    if(window.confirm("Are you sure you want to delete this person?"))
+    if (window.confirm("Are you sure you want to delete this person?"))
       api.deletePerson(id).then(res => {
         this.props.fetchData();
       }).catch(err => {
-        console.log(err);
+
       });
   }
 
@@ -71,13 +69,16 @@ class PersonModal extends Component {
 
           <div className="modal-info-container">
             <div className="modal-info-title">Groups</div>
-            <div className="modal-info-data">{modalData[groupKey]}</div>
+            <div className="modal-info-data">{modalData[process.env.REACT_APP_groupKey]}</div>
           </div>
 
           <div className="modal-info-container">
-            <div className="modal-info-title">Location</div>
+            <div className="modal-info-title">Locality</div>
             <div className="modal-info-data">
-              {modalData[localityKey] ? `${modalData[localityKey]}, ${modalData[countryKey]}` : modalData[countryKey]}
+              {modalData[process.env.REACT_APP_localityKey] ?
+                `${modalData[process.env.REACT_APP_localityKey]}, ${modalData[process.env.REACT_APP_countryKey]}`
+                : modalData[process.env.REACT_APP_countryKey]
+              }
             </div>
           </div>
         </div>

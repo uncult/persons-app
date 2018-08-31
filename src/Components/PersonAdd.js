@@ -9,28 +9,27 @@ class PersonAdd extends Component {
     this.state = {
       name: "",
       order: null,
-      address: "",
+      country: "",
+      locality: "",
       group: "",
       phone: [],
       email: [],
-      organization: null
+      organization: 1
     };
   }
 
   personAdd = () => {
     let d = this.state;
     api.addPerson(d.name, d.group, d.organization, d.email, d.phone, d.order, d.address).then(res => {
-      this.props.fetchData();
-    }).catch(err => {
-      console.log(err);
-    });
+      if (res.ok) {
+        /*Country response takes too long*/
+        setTimeout(() => {
+          this.props.fetchData();
+        }, 1000)
+        this.props.personAddModalToggle();
+      }
+    }).catch(err => {});
   }
-
-  onSaveEvent = () => {
-    this.personAdd();
-    this.props.personAddModalToggle();
-  }
-
 
   render() {
     return (
@@ -51,12 +50,10 @@ class PersonAdd extends Component {
           <div><input type="text" className="person-add-input" onChange={text => this.setState({ phone: [text.target.value] })} /></div>
           <div className="person-add-label">Email</div>
           <div><input type="text" className="person-add-input" onChange={text => this.setState({ email: [text.target.value] })} /></div>
-          <div className="person-add-label">Organization</div>
-          <div><input type="text" className="person-add-input" onChange={text => this.setState({ organization: text.target.value })} /></div>
         </div>
 
         <div className="modal-footer">
-          <button className="person-button-add person-save" onClick={this.onSaveEvent}>Save</button>
+          <button className="person-button-add person-save" onClick={this.personAdd}>Save</button>
         </div>
       </div>
     );

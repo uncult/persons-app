@@ -24,7 +24,6 @@ class Person extends Component {
 						<div className="person-image person-image-missing">{`${data.first_name ? data.first_name[0] : ''}${data.last_name ? data.last_name[0] : ''}`}</div>
 					}
 				</div>
-
 			</div>
 		);
 	}
