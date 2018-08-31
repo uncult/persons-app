@@ -22,6 +22,12 @@ class PersonAdd extends Component {
     api.addPerson(d.name, d.group, d.organization, d.email, d.phone, d.order, d.address);
   }
 
+  onSaveEvent = () => {
+    this.personAdd();
+    this.props.personAddModalToggle();
+  }
+
+
   render() {
     return (
       <div className="modal-container">
@@ -46,7 +52,7 @@ class PersonAdd extends Component {
         </div>
 
         <div className="modal-footer">
-          <button className="person-button-add person-save" onClick={this.personAdd}>Save</button>
+          <button className="person-button-add person-save" onClick={this.onSaveEvent}>Save</button>
         </div>
       </div>
     );

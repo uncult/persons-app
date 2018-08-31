@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { SortableContainer, SortableElement, arrayMove } from 'react-sortable-hoc';
 import './App.css';
 import Person from './Components/Person';
+import PersonModal from './Components/PersonModal';
 import PersonAdd from './Components/PersonAdd';
 import SearchResult from './Components/SearchResult';
 import Api from './Models/Api';
@@ -9,16 +10,15 @@ import Api from './Models/Api';
 /*
   -------------------TO FIX-------------------
   1) SAVING ORDER
-  2) UPDATE THE LIST WHEN ADDING AND DELETING
-  3) VISUAL EVENTS ON ADDING OR DELETING
+  2) UPDATE THE LIST WHEN ADDING
+  3) VISUAL EVENTS ON ADDING
   4) ADDRESS ADDITION
   5) SEARCH RESULTS
+  6) MOVE KEYS TO ANOTHER FILE
+  7) FIX THE LAST PAGE(REMOVE ARROW)
   --------------------------------------------
 */
 
-const groupKey = "eba502a1d2a7185f72d5a335ee7b4b75d89d3cd4";
-const localityKey = "588b8754dc0f49dc5aa5f1ad750c3a877f7dd5a1_locality";
-const countryKey = "588b8754dc0f49dc5aa5f1ad750c3a877f7dd5a1_country";
 const orderKey = "4aef6c7aeac722a72f486c85b0fba827f3bea8dd";
 const api = new Api();
 
@@ -53,6 +53,7 @@ class App extends Component {
     fetch(`${url}`)
       .then(response => response.json())
       .then(data => {
+        console.log("fetching")
         this.setState({
           personsData: data.data.sort((a, b) => a[orderKey] - b[orderKey])
         })
@@ -88,17 +89,16 @@ class App extends Component {
   /*Api functions*/
   personDelete = (id) => {
     api.deletePerson(id);
-    this.setState({ personsData: this.state.personsData.filter(el => el.id !== id) });
   }
 
   findPersons = (input) => {
     if (input.length > 1) {
       api.findPersons(input).then(data => {
-        this.setState({searchData: data});
+        this.setState({ searchData: data });
         this.setState({ searchToggle: "search-visible" })
       });
     } else {
-      this.setState({searchData: ''});
+      this.setState({ searchData: '' });
       this.setState({ searchToggle: "modal-invisible" })
     }
   }
@@ -152,7 +152,7 @@ class App extends Component {
           }} />
         </header>
 
-        <SearchResult className={this.state.searchToggle} data={this.state.searchData}/>
+        <SearchResult className={this.state.searchToggle} data={this.state.searchData} />
 
         <section className="section-title">
           People's List
@@ -161,7 +161,6 @@ class App extends Component {
         {/*------Rendering Person Rows------*/}
         {this.state.personsData ?
           <main>
-
             <button className="person-button-add" onClick={this.personAddModalToggle}>Add person</button>
             <div className={this.state.personAddModalToggle}>
               <PersonAdd personAddModalToggle={this.personAddModalToggle} visibility={this.state.personAddModalToggle} />
@@ -171,58 +170,12 @@ class App extends Component {
               <SortableList data={this.state.personsData} onSortEnd={this.onSortEnd} distance={10} />}
           </main>
           : ''}
-        {/*------Modal Window------*/}
+        {/*------Person Modal Window------*/}
         {modalData ?
           <section className={this.state.personModalToggle}>
-            <div className={`modal-container`}>
-              <div className="modal-header">
-                Person Information
-              <i className="fa fa-times" aria-hidden="true" onClick={this.personModalToggle} />
-              </div>
-
-              <div className="modal-person">
-                <div className="image-cropper">
-                  {modalData.picture_id ?
-                    <img src={modalData.picture_id.pictures["128"]} alt={modalData.name} className="person-image" /> :
-                    <div className="person-image person-image-missing lg">{`${modalData.first_name[0]}${modalData.last_name[0]}`}</div>
-                  }
-                </div>
-                <div className="modal-name">{modalData.name}</div>
-                <div className="modal-phone">{modalData.phone[0].value}</div>
-              </div>
-
-              <div className="modal-info">
-                <div className="modal-info-container">
-                  <div className="modal-info-title">Email</div>
-                  <div className="modal-info-data">{modalData.email[0].value}</div>
-                </div>
-
-                <div className="modal-info-container">
-                  <div className="modal-info-title">Organization</div>
-                  <div className="modal-info-data">{modalData.org_name}</div>
-                </div>
-
-                <div className="modal-info-container">
-                  <div className="modal-info-title">Groups</div>
-                  <div className="modal-info-data">{modalData[groupKey]}</div>
-                </div>
-
-                <div className="modal-info-container">
-                  <div className="modal-info-title">Location</div>
-                  <div className="modal-info-data">
-                    {modalData[localityKey] ? `${modalData[localityKey]}, ${modalData[countryKey]}` : modalData[countryKey]}
-                  </div>
-                </div>
-              </div>
-              <div className="modal-footer">
-                <button className="person-button-delete" onClick={() => this.personDelete(modalData.id)}>
-                  <i className="fa fa-trash" aria-hidden="true"></i>
-                </button>
-                <button className="modal-button" onClick={this.personModalToggle}>Back</button>
-              </div>
-            </div>
+            <PersonModal className={this.state.personModalToggle} delete={this.personDelete.bind(this)} toggleModal={this.personModalToggle.bind(this)} data={modalData} />
           </section>
-          : ""}
+          : ''}
 
         {/*------Pagination------*/}
         <section className="pagination-container">
