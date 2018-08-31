@@ -11,7 +11,8 @@ import Api from './Models/Api';
   -------------------TO DO--------------------
   1) Saving order
 
-  BUG: Back arrow dissapearing when searchng
+  BUG: need to start searching when refocusing
+  the search bar
   --------------------------------------------
 */
 
@@ -40,6 +41,9 @@ class App extends Component {
   fetchData = () => {
     const api_token = "df3541068dfdbdc2895db305918e6ed5743c74cf" //!important! Should be server side.
     const company_domain = "testcompany100";
+
+    if(this.state.personsData.length === 1 && this.state.page !== 1)
+      this.setState({page: this.state.page-1})
 
     const url = `https://${company_domain}.pipedrive.com/v1/persons?api_token=${api_token} 
     &start=${(this.state.page - 1) * 10}&limit=${persons_per_page}&sort=${orderKey}%20ASC`;
@@ -94,8 +98,8 @@ class App extends Component {
     }
   }
 
-  searchModalToggle = (e) => {
-    api.findById(e)
+  searchModalToggle = (id) => {
+    api.findById(id)
       .then(data => {
         this.setState({ searchToggle: "modal-invisible" })
         this.personModalToggle(data);
@@ -107,15 +111,17 @@ class App extends Component {
     if (this.node) {
       if (this.node.contains(e.target))
         return
-    }
 
-    if (this.state.searchToggle === "search-visible")
-      this.setState({ searchToggle: "modal-invisible" });
+      if (this.state.searchToggle === "search-visible" && !this.node.contains(e.target))
+        this.setState({ searchToggle: "modal-invisible" });
+    }
   }
 
+
   searchFocus = () => {
-    if (this.state.searchData)
+    if (this.state.searchData){      
       this.setState({ searchToggle: "search-visible" });
+    }
   }
 
   /*Page controllers*/
@@ -136,10 +142,11 @@ class App extends Component {
 
   componentDidMount() {
     this.fetchData();
+    document.addEventListener('mousedown', this.handleClick, false);
   }
 
   componentDidUpdate() {
-    document.addEventListener('mousedown', this.handleClick, false);
+
   }
 
   render() {
@@ -168,7 +175,6 @@ class App extends Component {
           <i className="fa fa-search" aria-hidden="true"></i>
           <input className="search" type="text" placeholder="Search" onFocus={this.searchFocus} onKeyUp={event => {
             this.findPersons(event.target.value);
-            this.setState({ page: 1 });
             this.setState({ filterString: event.target.value });
           }} />
         </header>

@@ -8,18 +8,9 @@ class SearchResult extends Component {
     };
   }
 
-  handleClick = (e) => {
-    if(this.node){
-      if(this.node.contains(e.target))
-        console.log("inside")
-    }
-  }
-
   componentDidUpdate() {
     if (this.state.data !== this.props.data)
       this.setState({ data: this.props.data });
-
-    
   }
 
   render() {

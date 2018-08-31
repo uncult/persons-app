@@ -80,6 +80,7 @@ class PersonModal extends Component {
             </div>
           </div>
         </div>
+        
         <div className="modal-footer">
           <button className="person-button-delete" onClick={this.deleteEvent}>
             <i className="fa fa-trash" aria-hidden="true"></i>

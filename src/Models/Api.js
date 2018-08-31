@@ -24,7 +24,7 @@ export default class Api {
         "588b8754dc0f49dc5aa5f1ad750c3a877f7dd5a1_formatted_address": address, //Figure out how to properly send an address.     
         visible_to: "1",
       })
-    })
+    });
   }
 
   deletePerson(id) {
@@ -34,7 +34,7 @@ export default class Api {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
       }
-    })
+    });
   }
 
   findPersons(input) {
