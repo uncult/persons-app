@@ -1,4 +1,7 @@
 import React, { Component } from 'react';
+import Api from '../Models/Api';
+
+const api = new Api();
 
 const groupKey = "eba502a1d2a7185f72d5a335ee7b4b75d89d3cd4";
 const localityKey = "588b8754dc0f49dc5aa5f1ad750c3a877f7dd5a1_locality";
@@ -14,8 +17,16 @@ class PersonModal extends Component {
     };
   }
 
+  personDelete = (id) => {
+    api.deletePerson(id).then(res => {
+      this.props.fetchData();
+    }).catch(err => {
+      console.log(err);
+    });;
+  }
+
   deleteEvent = () => {
-    this.props.delete(this.state.modalData.id);
+    this.personDelete(this.state.modalData.id);
     this.state.toggleModal();
   }
 
@@ -37,7 +48,9 @@ class PersonModal extends Component {
           <div className="image-cropper">
             {modalData.picture_id ?
               <img src={modalData.picture_id.pictures["128"]} alt={modalData.name} className="person-image" /> :
-              <div className="person-image person-image-missing lg">{`${modalData.first_name[0]}${modalData.last_name ? modalData.last_name[0] : ''}`}</div>
+              <div className="person-image person-image-missing lg">
+                {`${modalData.first_name ? modalData.first_name[0] : ""}${modalData.last_name ? modalData.last_name[0] : ''}`}
+              </div>
             }
           </div>
           <div className="modal-name">{modalData.name}</div>

@@ -8,18 +8,15 @@ import SearchResult from './Components/SearchResult';
 import Api from './Models/Api';
 
 /*
-  -------------------TO FIX-------------------
-  1) SAVING ORDER
-  2) UPDATE THE LIST WHEN ADDING
-  3) VISUAL EVENTS ON ADDING
-  4) ADDRESS ADDITION
-  5) SEARCH RESULTS
-  6) MOVE KEYS TO ANOTHER FILE
-  7) FIX THE LAST PAGE(REMOVE ARROW)
+  -------------------TO DO--------------------
+  1) Saving order
+
+  BUG: Back arrow dissapearing when searchng
   --------------------------------------------
 */
 
 const orderKey = "4aef6c7aeac722a72f486c85b0fba827f3bea8dd";
+const persons_per_page = 11;
 const api = new Api();
 
 class App extends Component {
@@ -43,7 +40,6 @@ class App extends Component {
   fetchData = () => {
     const api_token = "df3541068dfdbdc2895db305918e6ed5743c74cf" //!important! Should be server side.
     const company_domain = "testcompany100";
-    const persons_per_page = 10;
 
     const url = `https://${company_domain}.pipedrive.com/v1/persons?api_token=${api_token} 
     &start=${(this.state.page - 1) * 10}&limit=${persons_per_page}&sort=${orderKey}%20ASC`;
@@ -53,7 +49,6 @@ class App extends Component {
     fetch(`${url}`)
       .then(response => response.json())
       .then(data => {
-        console.log("fetching")
         this.setState({
           personsData: data.data.sort((a, b) => a[orderKey] - b[orderKey])
         })
@@ -86,11 +81,7 @@ class App extends Component {
     }
   };
 
-  /*Api functions*/
-  personDelete = (id) => {
-    api.deletePerson(id);
-  }
-
+  /*Search functionality*/
   findPersons = (input) => {
     if (input.length > 1) {
       api.findPersons(input).then(data => {
@@ -101,6 +92,30 @@ class App extends Component {
       this.setState({ searchData: '' });
       this.setState({ searchToggle: "modal-invisible" })
     }
+  }
+
+  searchModalToggle = (e) => {
+    api.findById(e)
+      .then(data => {
+        this.setState({ searchToggle: "modal-invisible" })
+        this.personModalToggle(data);
+      })
+  }
+
+  /*Detecting if clicking outside the search window*/
+  handleClick = (e) => {
+    if (this.node) {
+      if (this.node.contains(e.target))
+        return
+    }
+
+    if (this.state.searchToggle === "search-visible")
+      this.setState({ searchToggle: "modal-invisible" });
+  }
+
+  searchFocus = () => {
+    if (this.state.searchData)
+      this.setState({ searchToggle: "search-visible" });
   }
 
   /*Page controllers*/
@@ -118,8 +133,13 @@ class App extends Component {
     }
   };
 
+
   componentDidMount() {
     this.fetchData();
+  }
+
+  componentDidUpdate() {
+    document.addEventListener('mousedown', this.handleClick, false);
   }
 
   render() {
@@ -133,27 +153,31 @@ class App extends Component {
     const SortableList = SortableContainer((items) => {
       return (
         <div>
-          {items.data.map((data, key) => (
+          {items.data.map((data, key) => key !== persons_per_page - 1 ? (
             <SortableItem key={data.id} index={key} data={data} />
-          ))}
+          ) : '')}
         </div>
       );
     });
+
 
     return (
       <div className="App">
         <header>
           <div className="logo">pipedrive</div>
           <i className="fa fa-search" aria-hidden="true"></i>
-          <input className="search" type="text" placeholder="Search" onKeyUp={event => {
+          <input className="search" type="text" placeholder="Search" onFocus={this.searchFocus} onKeyUp={event => {
             this.findPersons(event.target.value);
             this.setState({ page: 1 });
             this.setState({ filterString: event.target.value });
           }} />
         </header>
-
-        <SearchResult className={this.state.searchToggle} data={this.state.searchData} />
-
+        <div ref={node => this.node = node}>
+          <SearchResult
+            className={this.state.searchToggle}
+            data={this.state.searchData}
+            onClick={this.searchModalToggle} />
+        </div>
         <section className="section-title">
           People's List
         </section>
@@ -163,7 +187,7 @@ class App extends Component {
           <main>
             <button className="person-button-add" onClick={this.personAddModalToggle}>Add person</button>
             <div className={this.state.personAddModalToggle}>
-              <PersonAdd personAddModalToggle={this.personAddModalToggle} visibility={this.state.personAddModalToggle} />
+              <PersonAdd fetchData={this.fetchData} personAddModalToggle={this.personAddModalToggle} visibility={this.state.personAddModalToggle} />
             </div>
             {this.state.isMobileDevice ?
               <SortableList data={this.state.personsData} onSortEnd={this.onSortEnd} pressDelay={100} /> :
@@ -173,7 +197,7 @@ class App extends Component {
         {/*------Person Modal Window------*/}
         {modalData ?
           <section className={this.state.personModalToggle}>
-            <PersonModal className={this.state.personModalToggle} delete={this.personDelete.bind(this)} toggleModal={this.personModalToggle.bind(this)} data={modalData} />
+            <PersonModal className={this.state.personModalToggle} toggleModal={this.personModalToggle} data={modalData} fetchData={this.fetchData} />
           </section>
           : ''}
 
@@ -187,7 +211,7 @@ class App extends Component {
             }
           </div>
           <div className="pagination-button-container-right">
-            {this.state.page ?
+            {this.state.personsData.length > 10 ?
               <button className="pagination-button" onClick={() => this.flipPage(1)}>
                 <i className="fa fa-arrow-right" aria-hidden="true"></i>
               </button> : ""

@@ -19,7 +19,11 @@ class PersonAdd extends Component {
 
   personAdd = () => {
     let d = this.state;
-    api.addPerson(d.name, d.group, d.organization, d.email, d.phone, d.order, d.address);
+    api.addPerson(d.name, d.group, d.organization, d.email, d.phone, d.order, d.address).then(res => {
+      this.props.fetchData();
+    }).catch(err => {
+      console.log(err);
+    });
   }
 
   onSaveEvent = () => {

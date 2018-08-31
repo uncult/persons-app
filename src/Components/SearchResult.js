@@ -8,9 +8,18 @@ class SearchResult extends Component {
     };
   }
 
+  handleClick = (e) => {
+    if(this.node){
+      if(this.node.contains(e.target))
+        console.log("inside")
+    }
+  }
+
   componentDidUpdate() {
     if (this.state.data !== this.props.data)
       this.setState({ data: this.props.data });
+
+    
   }
 
   render() {
@@ -22,7 +31,7 @@ class SearchResult extends Component {
           </div>
           <div className="search-data-container">
             {data.map(el =>
-              <div key={el.id} className="search-row">
+              <div key={el.id} className="search-row" onClick={() => this.props.onClick(el.id)}>
                 <div className="search-name">{el.name}</div>
                 <div className="search-data">{el.org_name}, {el.phone}, <br />{el.email}</div>
               </div>

@@ -8,7 +8,7 @@ const url = `https://${company_domain}.pipedrive.com/v1/persons?api_token=${api_
 
 export default class Api {
   addPerson(name, group, organization, email, phone, order, address) {
-    fetch(url, {
+    return fetch(url, {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -24,27 +24,17 @@ export default class Api {
         "588b8754dc0f49dc5aa5f1ad750c3a877f7dd5a1_formatted_address": address, //Figure out how to properly send an address.     
         visible_to: "1",
       })
-    }).then(res => {
-      console.log(res);
-      return res;
-    }).catch(err => {
-      console.log(err);
-    });
+    })
   }
 
   deletePerson(id) {
-    fetch(`https://${company_domain}.pipedrive.com/v1/persons/${id}?api_token=${api_token}`, {
+    return fetch(`https://${company_domain}.pipedrive.com/v1/persons/${id}?api_token=${api_token}`, {
       method: 'DELETE',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
       }
-    }).then(res => {
-      console.log(res);
-      return res;
-    }).catch(err => {
-      console.log(err);
-    });
+    })
   }
 
   findPersons(input) {
@@ -57,8 +47,20 @@ export default class Api {
         }
       }).then(response => response.json())
         .then(data => {
-          //console.log(`search result: `, data.data)
           return data.data;
         });
+  }
+
+  findById(id) {
+    return fetch(`https://${company_domain}.pipedrive.com/v1/persons/${id}?api_token=${api_token}`, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      }
+    }).then(response => response.json())
+      .then(data => {
+        return data.data;
+      });
   }
 }
