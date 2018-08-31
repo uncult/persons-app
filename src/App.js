@@ -54,13 +54,10 @@ class App extends Component {
     fetch(`${url}`)
       .then(response => response.json())
       .then(data => {
-        console.log(data.data)
         this.setState({
           personsData: data.data.sort((a, b) => a[orderKey] - b[orderKey])
         })
       })
-
-      
   }
 
   
@@ -68,13 +65,9 @@ class App extends Component {
   onSortEnd = ({ oldIndex, newIndex }) => {
     let data = this.state.personsData;
 
-    console.log(data[oldIndex][orderKey], data[newIndex][orderKey]);
-
     let swapped = data[oldIndex][orderKey];
     data[oldIndex][orderKey] = data[newIndex][orderKey];
     data[newIndex][orderKey] = swapped;
-
-    console.log(data[oldIndex][orderKey], data[newIndex][orderKey]);
 
     this.setState({personsData: data});
 
@@ -87,6 +80,9 @@ class App extends Component {
     /**************************/
     /**************************/
     /**************************/
+    api.updatePersonOrder(data[oldIndex].id, data[oldIndex][orderKey]);
+    api.updatePersonOrder(data[newIndex].id, data[newIndex][orderKey]);
+
   };
 
   /*Toggling visibility of the modal window*/

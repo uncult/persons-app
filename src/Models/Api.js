@@ -33,6 +33,19 @@ export default class Api {
     });
   }
 
+  updatePersonOrder(id, order) {
+    return fetch(`https://${company_domain}.pipedrive.com/v1/persons/${id}?api_token=${api_token}`, {
+      method: 'PUT',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        [process.env.REACT_APP_orderKey]: order,
+      })
+    });
+  }
+
   findPersons(input) {
     if (input.length > 1)
       return fetch(`https://${company_domain}.pipedrive.com/v1/persons/find?term=${input}&api_token=${api_token}`, {
