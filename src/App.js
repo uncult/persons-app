@@ -9,8 +9,6 @@ import Api from './Models/Api';
 
 /*
   -------------------TO DO--------------------
-  1) Automatic order iteration
-
   BONUS: Make an ability to add organizations
 
   BUG: need to start searching when refocusing
@@ -18,6 +16,9 @@ import Api from './Models/Api';
 
   BUG: Sometimes sorting doesn't save if
   done too quickly.
+
+  BUG: Figure out what to do when 0 people on 
+  a page.
   --------------------------------------------
 */
 
@@ -64,7 +65,7 @@ class App extends Component {
       })
   }
 
-  
+
   /*Sorting*/
   onSortEnd = ({ oldIndex, newIndex }) => {
     let data = this.state.personsData;
@@ -73,7 +74,7 @@ class App extends Component {
     data[oldIndex][orderKey] = data[newIndex][orderKey];
     data[newIndex][orderKey] = swapped;
 
-    this.setState({personsData: data});
+    this.setState({ personsData: data });
 
     /*Client side sorting*/
     this.setState({

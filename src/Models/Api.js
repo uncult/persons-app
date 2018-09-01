@@ -1,4 +1,5 @@
 const api_token = process.env.REACT_APP_API_KEY;
+const orderKey = process.env.REACT_APP_orderKey;
 const company_domain = "testcompany100";
 const url = `https://${company_domain}.pipedrive.com/v1/persons?api_token=${api_token}`
 
@@ -71,5 +72,13 @@ export default class Api {
       .then(data => {
         return data.data;
       });
+  }
+
+  lastItemOrder() {
+    const url = `https://${company_domain}.pipedrive.com/v1/persons?api_token=${api_token} 
+    &start=0&limit=1&sort=${orderKey}%20DESC`;
+
+    return fetch(`${url}`)
+    .then(response => response.json()).then(data => data.data[0][orderKey])
   }
 }

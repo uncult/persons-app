@@ -8,7 +8,6 @@ class PersonAdd extends Component {
     super(props);
     this.state = {
       name: "",
-      order: null,
       country: "",
       locality: "",
       group: "",
@@ -20,15 +19,17 @@ class PersonAdd extends Component {
 
   personAdd = () => {
     let d = this.state;
-    api.addPerson(d.name, d.group, d.organization, d.email, d.phone, d.order, d.address).then(res => {
-      if (res.ok) {
-        /*Country response takes too long*/
-        setTimeout(() => {
-          this.props.fetchData();
-        }, 1000)
-        this.props.personAddModalToggle();
-      }
-    }).catch(err => {});
+    api.lastItemOrder().then(order => {
+      api.addPerson(d.name, d.group, d.organization, d.email, d.phone, order + 1, d.address).then(res => {
+        if (res.ok) {
+          /*Country response takes too long*/
+          setTimeout(() => {
+            this.props.fetchData();
+          }, 1000)
+          this.props.personAddModalToggle();
+        }
+      }).catch(err => { })
+    })
   }
 
   render() {
