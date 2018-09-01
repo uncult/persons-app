@@ -23,8 +23,17 @@ class SearchResult extends Component {
           <div className="search-data-container">
             {data.map(el =>
               <div key={el.id} className="search-row" onClick={() => this.props.onClick(el.id)}>
-                <div className="search-name">{el.name}</div>
-                <div className="search-data">{el.org_name}, {el.phone}, <br />{el.email}</div>
+                <div style={{ marginRight: "10px" }}>
+                  <i className="fa fa-user" aria-hidden="true"></i>
+                </div>
+                <div>
+                  <div className="search-name">{el.name}</div>
+                  <div className="search-data">
+                    {el.org_name}
+                    {el.phone ? `, ${el.phone}` : ''}
+                    {el.email ? <div>{el.email}</div>:''}
+                  </div>
+                </div>
               </div>
             )}
           </div>
@@ -34,7 +43,7 @@ class SearchResult extends Component {
           <div className="search-data-header">
           </div>
           <div className="search-data-container">
-            <div style={{padding: "5px 10px 0 10px"}}>
+            <div style={{ padding: "5px 10px 0 10px" }}>
               <div className="search-data">No results.</div>
             </div>
           </div>

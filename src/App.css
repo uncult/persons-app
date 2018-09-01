@@ -118,6 +118,7 @@ a {
 
 .search-row {
   padding: 5px 10px;
+  display: flex;
 }
 
 .search-row:hover {

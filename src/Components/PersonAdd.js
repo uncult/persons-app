@@ -7,7 +7,7 @@ class PersonAdd extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      name: "",
+      name: null,
       country: "",
       locality: "",
       group: "",
@@ -21,24 +21,26 @@ class PersonAdd extends Component {
 
   personAdd = () => {
     let d = this.state;
-    api.lastItemOrder().then(order => {
-      api.addPerson(d.name, d.group, d.organization, d.email, d.phone, order + 1, d.address).then(res => {
-        if (res.ok) {
-          this.setState({ saveButton: "none" });
-          this.setState({ successIcon: "block" });
 
-          /*Country response takes too long*/
-          setTimeout(() => {
-            this.props.fetchData();
-          }, 1000)
-          setTimeout(() => {
-            this.props.personAddModalToggle();
-            this.setState({ saveButton: "block" });
-            this.setState({ successIcon: "none" });
-          }, 500)
-        }
-      }).catch(err => { })
-    })
+    if (this.state.name)
+      api.lastItemOrder().then(order => {
+        api.addPerson(d.name, d.group, d.organization, d.email, d.phone, order + 1, d.address).then(res => {
+          if (res.ok) {
+            this.setState({ saveButton: "none" });
+            this.setState({ successIcon: "block" });
+
+            /*Country response takes too long*/
+            setTimeout(() => {
+              this.props.fetchData();
+            }, 1000)
+            setTimeout(() => {
+              this.props.personAddModalToggle();
+              this.setState({ saveButton: "block" });
+              this.setState({ successIcon: "none" });
+            }, 500)
+          }
+        }).catch(err => { })
+      })
   }
 
   render() {
