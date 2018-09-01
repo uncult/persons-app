@@ -1,5 +1,8 @@
 const api_token = process.env.REACT_APP_API_KEY;
 const orderKey = process.env.REACT_APP_orderKey;
+const groupKey = process.env.REACT_APP_groupKey;
+const addressKey = process.env.REACT_APP_addressKey;
+
 const company_domain = "testcompany100";
 const url = `https://${company_domain}.pipedrive.com/v1/persons?api_token=${api_token}`
 
@@ -13,12 +16,12 @@ export default class Api {
       },
       body: JSON.stringify({
         name: name,
-        [process.env.REACT_APP_groupKey]: group,
+        [groupKey]: group,
         org_id: organization,
         email: email,
         phone: phone,
-        [process.env.REACT_APP_orderKey]: order,
-        [process.env.REACT_APP_addressKey]: address,
+        [orderKey]: order,
+        [addressKey]: address,
         visible_to: "1",
       })
     });
@@ -79,6 +82,6 @@ export default class Api {
     &start=0&limit=1&sort=${orderKey}%20DESC`;
 
     return fetch(`${url}`)
-    .then(response => response.json()).then(data => data.data[0][orderKey])
+      .then(response => response.json()).then(data => data.data[0][orderKey])
   }
 }

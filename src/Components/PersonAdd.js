@@ -13,7 +13,9 @@ class PersonAdd extends Component {
       group: "",
       phone: [],
       email: [],
-      organization: 1
+      organization: 1,
+      successIcon: "none",
+      saveButton: "block"
     };
   }
 
@@ -22,11 +24,18 @@ class PersonAdd extends Component {
     api.lastItemOrder().then(order => {
       api.addPerson(d.name, d.group, d.organization, d.email, d.phone, order + 1, d.address).then(res => {
         if (res.ok) {
+          this.setState({ saveButton: "none" });
+          this.setState({ successIcon: "block" });
+
           /*Country response takes too long*/
           setTimeout(() => {
             this.props.fetchData();
           }, 1000)
-          this.props.personAddModalToggle();
+          setTimeout(() => {
+            this.props.personAddModalToggle();
+            this.setState({ saveButton: "block" });
+            this.setState({ successIcon: "none" });
+          }, 500)
         }
       }).catch(err => { })
     })
@@ -54,7 +63,10 @@ class PersonAdd extends Component {
         </div>
 
         <div className="modal-footer">
-          <button className="person-button-add person-save" onClick={this.personAdd}>Save</button>
+          <button className="person-button-add person-save" onClick={this.personAdd}>
+            <i style={{ display: this.state.successIcon }} className="fa fa-check" aria-hidden="true"></i>
+            <span style={{ display: this.state.saveButton }}>Save</span>
+          </button>
         </div>
       </div>
     );

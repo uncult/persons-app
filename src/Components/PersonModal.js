@@ -3,8 +3,6 @@ import Api from '../Models/Api';
 
 const api = new Api();
 
-
-
 class PersonModal extends Component {
   constructor(props) {
     super(props);
@@ -18,10 +16,10 @@ class PersonModal extends Component {
   personDelete = (id) => {
     if (window.confirm("Are you sure you want to delete this person?"))
       api.deletePerson(id).then(res => {
+        if (this.props.dataLength === 1)
+          this.props.flipPage();
         this.props.fetchData();
-      }).catch(err => {
-
-      });
+      }).catch(err => { });
   }
 
   deleteEvent = () => {

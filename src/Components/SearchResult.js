@@ -29,7 +29,16 @@ class SearchResult extends Component {
             )}
           </div>
         </div>
-        : ''
+        :
+        <div className={[this.props.className, "search-container"].join(' ')}>
+          <div className="search-data-header">
+          </div>
+          <div className="search-data-container">
+            <div style={{padding: "5px 10px 0 10px"}}>
+              <div className="search-data">No results.</div>
+            </div>
+          </div>
+        </div>
     );
   }
 }

@@ -11,15 +11,17 @@ import Api from './Models/Api';
   -------------------TO DO--------------------
   BONUS: Make an ability to add organizations
 
-  BUG: need to start searching when refocusing
-  the search bar
+  CONCEPT:
+  let text = input; //org search bar
+  api.getOrgListByName(text); //returns list of names and ids.
+
+  (Basically the same solution as the search bar)
+  --------------------------------------------
 
   BUG: Sometimes sorting doesn't save if
   done too quickly.
-
-  BUG: Figure out what to do when 0 people on 
-  a page.
   --------------------------------------------
+ 
 */
 
 const orderKey = process.env.REACT_APP_orderKey;
@@ -38,7 +40,9 @@ class App extends Component {
       searchToggle: "modal-invisible",
       modalData: "",
       isMobileDevice: this.isMobileDevice(),
-      filterString: ""
+      filterString: "",
+      spinner: "none",
+      searchIcon: "block"
     };
     this.personModalToggle = this.personModalToggle;
   }
@@ -48,13 +52,8 @@ class App extends Component {
     const api_token = process.env.REACT_APP_API_KEY;
     const company_domain = "testcompany100";
 
-    if (this.state.personsData.length === 1 && this.state.page !== 1)
-      this.setState({ page: this.state.page - 1 })
-
     const url = `https://${company_domain}.pipedrive.com/v1/persons?api_token=${api_token} 
     &start=${(this.state.page - 1) * 10}&limit=${persons_per_page}&sort=${orderKey}%20ASC`;
-
-    //const url = `https://${company_domain}.pipedrive.com/v1/persons?api_token=${api_token}&start=0&limit=105`;
 
     fetch(`${url}`)
       .then(response => response.json())
@@ -64,7 +63,6 @@ class App extends Component {
         })
       })
   }
-
 
   /*Sorting*/
   onSortEnd = ({ oldIndex, newIndex }) => {
@@ -107,9 +105,16 @@ class App extends Component {
   /*Search functionality*/
   findPersons = (input) => {
     if (input.length > 1) {
+      /*loader effect*/
+      this.setState({ spinner: "block" });
+      this.setState({ searchIcon: "none" });
+
       api.findPersons(input).then(data => {
         this.setState({ searchData: data });
-        this.setState({ searchToggle: "search-visible" })
+        this.setState({ searchToggle: "search-visible" });
+
+        this.setState({ searchIcon: "block" })
+        this.setState({ spinner: "none" });
       });
     } else {
       this.setState({ searchData: '' });
@@ -136,12 +141,11 @@ class App extends Component {
     }
   }
 
-
-  searchFocus = () => {
+  /*searchFocus = () => {
     if (this.state.searchData) {
       this.setState({ searchToggle: "search-visible" });
     }
-  }
+  }*/
 
   /*Page controllers*/
   flipPage = (direction) => {
@@ -188,12 +192,15 @@ class App extends Component {
     return (
       <div className="App">
         <header>
-          <div className="logo">pipedrive</div>
-          <i className="fa fa-search" aria-hidden="true"></i>
-          <input className="search" type="text" placeholder="Search" onFocus={this.searchFocus} onKeyUp={event => {
-            this.findPersons(event.target.value);
-            this.setState({ filterString: event.target.value });
-          }} />
+        <a href="./"><div className="logo">pipedrive</div></a>
+          <div className="search-bar-container">
+            <div style={{ display: this.state.spinner }} className="lds-dual-ring"></div>
+            <i style={{ display: this.state.searchIcon }} className="fa fa-search" aria-hidden="true"></i>
+            <input className="search" type="text" placeholder="Search" onFocus={this.searchFocus} onKeyUp={event => {
+              this.findPersons(event.target.value);
+              this.setState({ filterString: event.target.value });
+            }} />
+          </div>
         </header>
         <div ref={node => this.node = node}>
           <SearchResult
@@ -221,7 +228,13 @@ class App extends Component {
         {/*------Person Modal Window------*/}
         {modalData ?
           <section className={this.state.personModalToggle}>
-            <PersonModal className={this.state.personModalToggle} toggleModal={this.personModalToggle} data={modalData} fetchData={this.fetchData} />
+            <PersonModal
+              className={this.state.personModalToggle}
+              toggleModal={this.personModalToggle}
+              data={modalData}
+              dataLength={this.state.personsData.length}
+              flipPage={() => this.flipPage(-1)}
+              fetchData={this.fetchData} />
           </section>
           : ''}
 
