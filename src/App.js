@@ -53,13 +53,13 @@ class App extends Component {
     const company_domain = "testcompany100";
 
     const url = `https://${company_domain}.pipedrive.com/v1/persons?api_token=${api_token} 
-    &start=${(this.state.page - 1) * 10}&limit=${persons_per_page}&sort=${orderKey}%20ASC`;
+    &start=${(this.state.page - 1) * 10}&limit=${persons_per_page}&sort=${orderKey}%20DESC`;
 
     fetch(`${url}`)
       .then(response => response.json())
       .then(data => {
         this.setState({
-          personsData: data.data.sort((a, b) => a[orderKey] - b[orderKey])
+          personsData: data.data.sort((a, b) => b[orderKey] - a[orderKey])
         })
       })
   }
