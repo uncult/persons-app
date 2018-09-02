@@ -57,11 +57,6 @@ class App extends Component {
 
     this.setState({ personsData: data });
 
-    /*Client side sorting*/
-    /*this.setState({
-      personsData: arrayMove(this.state.personsData, oldIndex, newIndex),
-    })*/
-
     /*Api saving data*/
     api.updatePersonOrder(data[oldIndex].id, data[oldIndex][orderKey]).then(() =>
       api.updatePersonOrder(data[newIndex].id, data[newIndex][orderKey]).then(() =>
