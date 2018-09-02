@@ -51,21 +51,30 @@ class App extends Component {
   onSortEnd = ({ oldIndex, newIndex }) => {
     let data = this.state.personsData;
 
-    let swapped = data[oldIndex][orderKey];
-    data[oldIndex][orderKey] = data[newIndex][orderKey];
-    data[newIndex][orderKey] = swapped;
-
-    this.setState({ personsData: data });
-
     /*Client side sorting*/
     this.setState({
       personsData: arrayMove(this.state.personsData, oldIndex, newIndex),
     })
 
     /*Api saving data*/
-    api.updatePersonOrder(data[oldIndex].id, data[oldIndex][orderKey]).then(() =>
-      api.updatePersonOrder(data[newIndex].id, data[newIndex][orderKey]).then(() =>
-        this.fetchData()));
+
+    if(newIndex > oldIndex){
+      let target = data[newIndex][orderKey];
+      api.updatePersonOrder(data[oldIndex].id, target);
+      console.log(data[oldIndex].name, data[oldIndex][orderKey], target);
+      for(let i = 0; i < newIndex; i++){
+        api.updatePersonOrder(data[i+1].id, data[i+1][orderKey] + 1);
+        console.log(data[i+1].name, data[i+1][orderKey] + 1);
+      }
+    }else{
+      let target = data[newIndex][orderKey];
+      console.log(data[oldIndex][orderKey], target)
+      api.updatePersonOrder(data[oldIndex].id, target);
+      for(let i = 0; i < oldIndex; i++){
+        api.updatePersonOrder(data[i].id, data[i][orderKey] - 1);
+        console.log(data[i].name, data[i][orderKey] - 1);
+      }
+    }
   }
 
   /*Toggling visibility of the modal window*/
