@@ -38,7 +38,7 @@ class Organization extends Component {
           </div>
           <div className="search-data-container">
             <div style={{ padding: "5px 10px 0 10px" }}>
-              <div className="search-data">'...' will be added as a new organization.</div>
+              <div className="search-data">"{this.props.organizationName}" will be added as a new organization.</div>
             </div>
           </div>
         </div>

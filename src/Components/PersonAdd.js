@@ -55,10 +55,21 @@ class PersonAdd extends Component {
             this.props.personAddModalToggle();
             this.setState({ saveButton: "block" });
             this.setState({ successIcon: "none" });
+
+            this.myFormRef.reset();
+            this.setState({name: ''});
+            this.setState({group: ''});
+            this.setState({organization: null});
+            this.setState({orgFill: ''});
+            this.setState({email: ''});
+            this.setState({phone: ''});
+            this.setState({address: ''});
           }, 500)
         }
       }).catch(err => { })
     })
+
+
   }
 
   orgSearch = (input) => {
@@ -109,8 +120,8 @@ class PersonAdd extends Component {
           Add new person
             <i className="fa fa-times" aria-hidden="true" onClick={this.props.personAddModalToggle} />
         </div>
-        
-        <form>
+
+        <form ref={node => this.myFormRef = node}>
           <div className="person-add-body">
             <div className="person-add-label">Name</div>
             <div><input type="text" className="person-add-input" onChange={text => this.setState({ name: text.target.value })} /></div>
@@ -121,7 +132,7 @@ class PersonAdd extends Component {
               <div><input type="text" style={{ padding: "4px 25px" }} value={this.state.orgFill} className="person-add-input" onChange={text => this.orgSearch(text.target.value)} /></div>
             </div>
             <div ref={node => this.node = node} style={{ display: this.state.searchVisibility }}>
-              <Organization setOrganization={this.setOrganization} data={this.state.searchData} />
+              <Organization organizationName={this.state.orgFill} setOrganization={this.setOrganization} data={this.state.searchData} />
             </div>
             <div className="person-add-label">Address</div>
             <div><input type="text" className="person-add-input" onChange={text => this.setState({ address: text.target.value })} /></div>
