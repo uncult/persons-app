@@ -63,10 +63,9 @@ class App extends Component {
     })
 
     /*Api saving data*/
-    api.updatePersonOrder(data[oldIndex].id, data[oldIndex][orderKey]).then(() =>
-      api.updatePersonOrder(data[newIndex].id, data[newIndex][orderKey]).then(() =>
-        this.fetchData()));
-  }
+    api.updatePersonOrder(data[oldIndex].id, data[oldIndex][orderKey]);
+    api.updatePersonOrder(data[newIndex].id, data[newIndex][orderKey]);
+  };
 
   /*Toggling visibility of the modal window*/
   personModalToggle = (data) => {
@@ -167,21 +166,10 @@ class App extends Component {
       );
     });
 
-    /*
-    const SortableList = () => {
-      return (
-        <div>
-          {this.state.personsData.map((data, key) => key !== persons_per_page - 1 ? (
-            <Person key={data.id} index={key} data={data} openModal={this.personModalToggle} />
-          ) : '')}
-        </div>
-      );
-    };*/
-
     return (
       <div className="App">
         <header>
-          <a href="./"><div className="logo">pipedrive</div></a>
+        <a href="./"><div className="logo">pipedrive</div></a>
           <div className="search-bar-container">
             <div style={{ display: this.state.spinner }} className="lds-dual-ring"></div>
             <i style={{ display: this.state.searchIcon }} className="fa fa-search" aria-hidden="true"></i>
