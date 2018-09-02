@@ -7,13 +7,6 @@ import PersonAdd from './Components/PersonAdd';
 import SearchResult from './Components/SearchResult';
 import Api from './Models/Api';
 
-/*
-  -------------------TO DO--------------------
-  BUG: Sometimes sorting doesn't save if
-  done too quickly.
-  --------------------------------------------
-*/
-
 const orderKey = process.env.REACT_APP_orderKey;
 const persons_per_page = 11;
 const api = new Api();
