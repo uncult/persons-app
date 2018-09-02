@@ -9,8 +9,9 @@ class SearchResult extends Component {
   }
 
   componentDidUpdate() {
-    if (this.props.data && this.state.data !== this.props.data)
-      this.setState({ data: this.props.data.sort() });
+    if (this.state.data !== this.props.data) {
+      this.setState({ data: this.props.data });
+    }
   }
 
   render() {
@@ -31,7 +32,7 @@ class SearchResult extends Component {
                   <div className="search-data">
                     {el.org_name}
                     {el.phone ? `, ${el.phone}` : ''}
-                    {el.email ? <div>{el.email}</div>:''}
+                    {el.email ? <div>{el.email}</div> : ''}
                   </div>
                 </div>
               </div>
