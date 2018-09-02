@@ -105,6 +105,16 @@ a {
   padding-bottom: 8px;
 }
 
+.search-container-org {
+  position: absolute;
+  background: #FFFFFF;
+  max-height: 250px;
+  width: 307px;
+  box-shadow: 0px 6px 8px rgba(0,0,0,0.15), 0px 3px 4px rgba(0,0,0,0.1);
+  border-radius: 4px 4px 4px 4px;
+  padding-bottom: 8px;
+}
+
 .search-data-header {
   height: 0px;
   background: #3F4346;
@@ -112,7 +122,7 @@ a {
 
 .search-data-container {
   overflow-y: auto;
-  max-height: 401px;
+  max-height: 250px;
   border-top: solid 2px #2cbf55;
 }
 

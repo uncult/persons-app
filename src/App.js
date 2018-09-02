@@ -9,19 +9,9 @@ import Api from './Models/Api';
 
 /*
   -------------------TO DO--------------------
-  BONUS: Make an ability to add organizations
-
-  CONCEPT:
-  let text = input; //org search bar
-  api.getOrgListByName(text); //returns list of names and ids.
-
-  (Basically the same solution as the search bar)
-  --------------------------------------------
-
   BUG: Sometimes sorting doesn't save if
   done too quickly.
   --------------------------------------------
- 
 */
 
 const orderKey = process.env.REACT_APP_orderKey;
@@ -59,7 +49,7 @@ class App extends Component {
       .then(response => response.json())
       .then(data => {
         this.setState({
-          personsData: data.data.sort((a, b) => b[orderKey] - a[orderKey])
+          personsData: data.data ? data.data.sort((a, b) => b[orderKey] - a[orderKey]) : this.state.personsData
         })
       })
   }
@@ -141,12 +131,6 @@ class App extends Component {
     }
   }
 
-  /*searchFocus = () => {
-    if (this.state.searchData) {
-      this.setState({ searchToggle: "search-visible" });
-    }
-  }*/
-
   /*Page controllers*/
   flipPage = (direction) => {
     this.setState({ page: this.state.page + direction })
@@ -196,7 +180,7 @@ class App extends Component {
           <div className="search-bar-container">
             <div style={{ display: this.state.spinner }} className="lds-dual-ring"></div>
             <i style={{ display: this.state.searchIcon }} className="fa fa-search" aria-hidden="true"></i>
-            <input className="search" type="text" placeholder="Search" onFocus={this.searchFocus} onKeyUp={event => {
+            <input className="search" type="text" placeholder="Search" onKeyUp={event => {
               this.findPersons(event.target.value);
               this.setState({ filterString: event.target.value });
             }} />

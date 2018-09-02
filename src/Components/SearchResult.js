@@ -10,7 +10,7 @@ class SearchResult extends Component {
 
   componentDidUpdate() {
     if (this.state.data !== this.props.data)
-      this.setState({ data: this.props.data });
+      this.setState({ data: this.props.data.sort() });
   }
 
   render() {

@@ -84,4 +84,34 @@ export default class Api {
     return fetch(`${url}`)
       .then(response => response.json()).then(data => data.data[0][orderKey])
   }
+
+  findOrg(input) {
+    if (input.length > 1)
+      return fetch(`https://${company_domain}.pipedrive.com/v1/organizations/find?term=${input}&api_token=${api_token}`, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        }
+      }).then(response => response.json())
+        .then(data => {
+          return data.data;
+        });
+  }
+
+  addOrg(name) {
+    return fetch(`https://${company_domain}.pipedrive.com/v1/organizations?api_token=${api_token}`, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name: name,
+      })
+    }).then(response => response.json())
+      .then(data => {
+        return data.data;
+      });
+  }
 }
