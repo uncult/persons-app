@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { SortableContainer, SortableElement} from 'react-sortable-hoc';
+import { SortableContainer, SortableElement } from 'react-sortable-hoc';
 import './App.css';
 import Person from './Components/Person';
 import PersonModal from './Components/PersonModal';
@@ -36,7 +36,7 @@ class App extends Component {
     const company_domain = "testcompany100";
 
     const url = `https://${company_domain}.pipedrive.com/v1/persons?api_token=${api_token} 
-    &start=${(this.state.page - 1) * 10}&limit=${persons_per_page}&sort=${orderKey}%20DESC`;
+    &start=${(this.state.page - 1) * (persons_per_page - 1)}&limit=${persons_per_page}&sort=${orderKey}%20DESC`;
 
     fetch(`${url}`)
       .then(response => response.json())
@@ -161,17 +161,6 @@ class App extends Component {
         </div>
       );
     });
-
-    /*
-    const SortableList = () => {
-      return (
-        <div>
-          {this.state.personsData.map((data, key) => key !== persons_per_page - 1 ? (
-            <Person key={data.id} index={key} data={data} openModal={this.personModalToggle} />
-          ) : '')}
-        </div>
-      );
-    };*/
 
     return (
       <div className="App">
